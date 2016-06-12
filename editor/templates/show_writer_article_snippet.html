@@ -1,0 +1,60 @@
+    <div class="container">
+        <div class="col-md-15">
+            <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>标题
+                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 
+                </th>
+                <th>作者
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 
+                </th>
+                <th>点赞
+                    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> 
+                </th>
+                <th>段落
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span> 
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+             {% for article in articles_list %}
+             {# Each "article" is a Articles model object. #}
+              <tr>
+                <td>
+                    <a href={% url 'show_writer_article' article.id %}>{{ article.title|title }}</a>
+                </td>
+                <td>
+                    {{ article.author.username}}
+                </td>
+                <td>
+                    {{ article.num_like }}
+                </td>
+                <td>
+                    {{ article.num_para }}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+      </div>
+
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if articles_list.has_previous %}
+                <a href="?page={{ articles_list.previous_page_number }}">previous</a>
+            {% endif %}
+
+            {% if articles_list.number > 1 %}
+            <span class="current">
+                Page {{ articles_list.number }} of {{ articles_list.paginator.num_pages }}.
+            </span>
+            {% endif %}
+
+            {% if articles_list.has_next %}
+                <a href="?page={{ articles_list.next_page_number }}">next</a>
+            {% endif %}
+        </span>
+    </div>
+ </div>

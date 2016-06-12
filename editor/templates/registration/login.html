@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<form method="post" action=".">
+  {% csrf_token %} 
+  <div>
+      <div class="form-group">
+        <label for="id_username" class="col-sm-1 control-label">邮箱</label>
+        <div class="col-sm-3">
+          {{ form.username.errors }}
+          <input type="text" class="form-control" id="id_username" name="{{ form.username.name }}" placeholder="Username..." />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="id_password" class="col-sm-1 control-label">密码</label>
+        <div class="col-sm-3">
+          {{ form.password.errors }}
+          <input type="password" class="form-control" id="id_password" name="{{ form.password.name }}" placeholder="Password...." />
+        </div>
+      </div>
+      <input type="submit" class="btn btn-sm btn-success" value="登录" />
+  </div>
+  <br>
+  <br>
+  <br>
+  <div>
+  <input type="hidden" name="next" value="{{ next }}" />
+  </div>
+</form>
+
+<div>
+{% trans "忘记密码" %}? <a href="{% url 'auth_password_reset' %}">{% trans "重设密码" %}</a>!<br/>
+{% trans "还未注册" %}? <a href="{% url 'registration_register' %}">{% trans "注册账户" %}</a>!
+</div>
+{% endblock %}

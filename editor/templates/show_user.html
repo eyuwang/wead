@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block head_extra %}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="form-group">
+    <label class="col-sm-1 control-label">用户名</label>
+    <div class="col-sm-1">
+        <span>{{ user.username }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="form-group">
+    <label class="col-sm-1 control-label">姓</label>
+    <div class="col-sm-1">
+        <span>{{ user.last_name }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="form-group">
+    <label class="col-sm-1 control-label">名</label>
+    <div class="col-sm-1">
+        <span>{{ user.first_name }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="form-group">
+    <label class="col-sm-1 control-label">类型</label>
+    <div class="col-sm-1">
+        <span>{{ user.user_type }}</span>
+    </div>
+  </div>
+</div>
+
+{% if has_uploades != 0 %}
+<div class="container">
+  {% for file in files_uploaded %}
+  <img src="../../static/uploads/{{ user.username}}/{{file}}" class="img-thumbnail" alt="Cinque Terre" width="304" height="236"> 
+  {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

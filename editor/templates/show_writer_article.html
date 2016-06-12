@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block head_extra %}
+    <script type="text/javascript">
+        $(document).ready(function(){  
+            $('#like_it').click(function(){
+               var article_id = $('#article_id').val()
+               $.ajax({                                                     
+                    url: '/editor/articles/' + article_id + '/like/',
+                    beforeSend: function(xhr, request) {
+                    },
+                    success: function(xdata, status, response){
+                        $('#num_like').replaceWith('<span id="num_like">'
+                                                     + xdata
+                                                     + '</span>');                
+                    },
+                    complete: function(response) {                           
+                    }
+                });
+            });
+
+            function getDropDownList(name, id, optionList) {
+                var combo = $("<select></select>").attr("id", id).attr("name", name);
+
+                $.each(optionList, function (i, el) {
+                    combo.append("<option>" + el + "</option>");
+                });
+                $( "span[name^='options_']" ).append(combo);
+            }
+            var num_para = $('#num_para').val();
+            var optionlist = [];
+            console.log(num_para)
+            for (var i = 1; i <= num_para; i++) {
+                optionlist.push(i);
+            }
+            getDropDownList('paragraph', 'paragraph', optionlist)
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% if article_exists == 0 %}
+        {% load wysiwyg %}
+        {% wysiwyg_setup %}
+        <form action={% url 'editor_index' %} method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit" />
+        </form>
+        {% wysiwyg_editor "text_editor_pane" %}
+    {% endif %}
+
+    {% if article_exists == 1 %}
+        <div class="container">
+            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#myModal">投放广告</button>
+            <a href={% url 'edit_writer_article' article_id %} class="btn btn-sm btn-success pull-right">修改文章</a>  
+            <h4 class="text-center">{{ article_title|safe }}</h4>
+            {{ article_content|safe }}
+
+
+            <input type="hidden" id="num_para" value="{{ article_para }}" />
+              <!-- Modal -->
+              <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                          {% for file in files_uploaded %}
+                          <img src="../../../static/uploads/{{ user.username }}/{{file}}" class="img-thumbnail" width="204" height="136"> 
+
+                          <form role="form">
+                            <div class="container">
+                                <label class="radio-inline">
+                                  <input type="radio" name="optradio">
+                                    投放在文章头
+                                </label>
+                            </div>
+                            
+                            <div class="container">
+                                <label class="radio-inline">
+                                  <input type="radio" name="optradio">
+                                    投放在第<span name='options_{{forloop.counter}}'></span>段
+                                </label>
+                            </div>
+                            
+                            <div class="container">
+                            <label class="radio-inline">
+                                  <input type="radio" name="optradio">
+                                    投放在文章尾
+                                </label>
+                            </div>
+                          </form>
+                          {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        </div>
+
+    {% endif %}
+    <hr>
+   
+    <input id="article_id" type="hidden" value={{ article_id }}></input> 
+    <span class="glyphicon glyphicon-book" aria-hidden="true"></span> &nbsp;{{ article_read }} &nbsp; &nbsp;
+    <a id="like_it" href='#' class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></a> &nbsp;<span id="num_like">{{ article_like }}</span>
+{% endblock %}

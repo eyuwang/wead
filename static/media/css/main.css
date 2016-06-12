@@ -1,0 +1,8 @@
+textarea {
+    resize: none; /* only allow resize vertically */
+}
+
+
+span.test {
+    font-size: 30px;
+}
