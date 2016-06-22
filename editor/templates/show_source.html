@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block head_extra %}
+    <script type="text/javascript">
+        $(document).ready(function(){ 
+            $('#start_source').click(function(){
+                var source = $('input[name="optradio"]:checked', '#source_form').val();
+                if (source == '2') {
+                    window.location.href = "/source/lib/";
+                }
+            });
+        });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <form id="source_form" role="form">
+        <div class="radio">
+          <label><input type="radio" name="optradio" value="1">自己写文章</label>
+        </div>
+        <!--
+        <div class="radio">
+          <label><input type="radio" name="optradio">自己找文章</label>
+        </div>
+        -->
+        <div class="radio">
+          <label><input type="radio" name="optradio" value="2">从文库里找文章</label>
+        </div>
+
+        <button id="start_source" type="button" class="btn btn-success">开始</button>
+  </form>
+</div>
+
+{% endblock %}

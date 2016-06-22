@@ -164,3 +164,25 @@ class UploadFile(models.Model):
     """
     user = models.CharField(max_length=128, null=True)
     file_uploaded = models.FileField(upload_to=update_filename)
+
+## Library articles
+#class Category(models.Model):
+#    name = models.CharField(max_length=30)
+#    description = models.CharField(max_length=200, default="")
+#    code = models.IntegerField(null=True, blank=True)
+#    parent = models.ForeignKey("Category", null=True, blank=True)
+#    added = models.DateTimeField('date added',null=True,auto_now_add=True)
+#
+#    def __str__(self):
+#        return self.name.encode('utf-8').strip()
+#
+#class Article(models.Model):
+#    category = models.ForeignKey(Category)
+#    title = models.CharField(max_length=120)
+#    author = models.CharField(max_length=30)
+#    body = models.TextField('Content')
+#    added = models.DateTimeField('date added',null=True,auto_now_add=True)
+#                                                                                                        
+#    def __str__(self):
+#        return '%s: %s' % (self.author.encode('utf-8').strip(), 
+#                           self.title.encode('utf-8').strip())

@@ -42,7 +42,7 @@
 {% if has_uploades != 0 %}
 <div class="container">
   {% for file in files_uploaded %}
-  <img src="../../static/uploads/{{ user.username}}/{{file}}" class="img-thumbnail" alt="Cinque Terre" width="304" height="236"> 
+  <img src="/static/uploads/{{ user.username}}/{{file}}" class="img-thumbnail" alt="Cinque Terre" width="304" height="236"> 
   {% endfor %}
 </div>
 {% endif %}

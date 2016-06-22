@@ -2,6 +2,22 @@
 {% block head_extra %}
     <script type="text/javascript">
         $(document).ready(function(){  
+           function getCookie(name) {                                              
+                var cookieValue = null;                                             
+                if (document.cookie && document.cookie != '') {                     
+                    var cookies = document.cookie.split(';');                       
+                    for (var i = 0; i < cookies.length; i++) {                      
+                        var cookie = jQuery.trim(cookies[i]);                       
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;                                                  
+                        }                                                           
+                    }                                                               
+                }                                                                   
+                return cookieValue;                                                 
+            }                                              
+            var csrftoken = getCookie('csrftoken');         
+
             $('#like_it').click(function(){
                var article_id = $('#article_id').val()
                $.ajax({                                                     
@@ -22,17 +38,65 @@
                 var combo = $("<select></select>").attr("id", id).attr("name", name);
 
                 $.each(optionList, function (i, el) {
-                    combo.append("<option>" + el + "</option>");
+                    combo.append("<option value='" + el +"'" + ">" + el + "</option>");
                 });
-                $( "span[name^='options_']" ).append(combo);
+                $("span[id^='options_']").append(combo);
             }
             var num_para = $('#num_para').val();
             var optionlist = [];
-            console.log(num_para)
             for (var i = 1; i <= num_para; i++) {
                 optionlist.push(i);
             }
-            getDropDownList('paragraph', 'paragraph', optionlist)
+            getDropDownList('paragraph', 'paragraph', optionlist);
+
+            $('#yu_lan').click(function() {
+                var ad_placement_positions = []
+                var article_id = $('#article_id').val()
+                $("form[id^='tou_fang_logo_']").each(function(){
+                    // name of logo file
+                    var logo_filename = this.id.replace('tou_fang_logo_', '');
+                    // position to place the logo file
+                    // choice = 1, 文章头
+                    // choice = 2，文章中间某段，看下面如何找到段落数
+                    // choice = 3, 文章尾
+                    var choice = this.optradio.value
+                    console.log(choice)
+                    var place_at_para = "-1"
+                    // if plece at behind a paragraph, which paragraph?
+                    if (choice == 2) {
+                        $('option:selected').each(function() {
+                            var selected_his_parent_id = $(this).parent().parent().attr('id')
+                            if (selected_his_parent_id.replace('options_', '') == logo_filename) {
+                                place_at_para = $(this).val()
+                                console.log(place_at_para);
+                            }
+                        });
+                    }
+                    ad_placement_positions.push([logo_filename, choice, place_at_para])
+                });
+
+                console.log(ad_placement_positions);
+
+                // Ajax to insert the logos to article
+                $.ajax({                                                     
+                    url: '/editor/articles/ad/preview/' + article_id + '/',
+                    type: "POST",
+                    data: JSON.stringify(ad_placement_positions),
+                    processData: false,
+                    contentType: "application/json; charset=UTF-8",
+                    beforeSend: function(xhr, request) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken); 
+                    },
+                    success: function(xdata, status, response){
+                        $('#article_content').replaceWith(xdata);
+                        $('.modal-backdrop').remove();
+                        $('body').removeClass('modal-open');
+          
+                    },
+                    complete: function(response) {                           
+                    }
+                });
+            });
         });
     </script>
 {% endblock %}
@@ -50,7 +114,7 @@
     {% endif %}
 
     {% if article_exists == 1 %}
-        <div class="container">
+        <div id="article_content" class="container">
             <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#myModal">投放广告</button>
             <a href={% url 'edit_writer_article' article_id %} class="btn btn-sm btn-success pull-right">修改文章</a>  
             <h4 class="text-center">{{ article_title|safe }}</h4>
@@ -68,26 +132,28 @@
                     <div class="modal-body">
                         <div class="container">
                           {% for file in files_uploaded %}
-                          <img src="../../../static/uploads/{{ user.username }}/{{file}}" class="img-thumbnail" width="204" height="136"> 
+                          <img src="/static/uploads/{{ user.username }}/{{file}}" class="img-thumbnail" width="204" height="136"> 
 
-                          <form role="form">
+                          <form id="tou_fang_logo_{{file}}" role="form">
                             <div class="container">
                                 <label class="radio-inline">
-                                  <input type="radio" name="optradio">
+                                  <input type="radio" value=1 name="optradio">
                                     投放在文章头
                                 </label>
                             </div>
-                            
+                           
+                            {% if article_para > 1 %} 
                             <div class="container">
                                 <label class="radio-inline">
-                                  <input type="radio" name="optradio">
-                                    投放在第<span name='options_{{forloop.counter}}'></span>段
+                                  <input type="radio" value=2 name="optradio">
+                                  投放在第<span id='options_{{file}}' name='ioptions_{{file}}'></span>段尾
                                 </label>
                             </div>
+                            {% endif %}
                             
                             <div class="container">
                             <label class="radio-inline">
-                                  <input type="radio" name="optradio">
+                                  <input type="radio" value=3 name="optradio">
                                     投放在文章尾
                                 </label>
                             </div>
@@ -96,7 +162,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                      <button id="yu_lan" type="button" class="btn btn-success" data-dismiss="modal">预览</button>
                     </div>
                   </div>
                 </div>

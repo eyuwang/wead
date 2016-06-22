@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^editor/', include('editor.urls')),
 #    url(r'^accounts/', include('registration.backends.hmac.urls')),
 #    url(r'^accounts/', include('registration.backends.simple.urls')),
-    url(r'^accounts/profile/$', views.show_account, name='show_account'),
+    url(r'^accounts/profile/$', views.dispatch_ad_source, name='dispatch_ad_source'),
     url(r'^accounts/register/$',
         RegistrationView.as_view(
             form_class = UserRegistrationForm

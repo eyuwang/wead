@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block head_extra %}
+    <script type="text/javascript">
+        $(document).ready(function(){ 
+           // load some articles
+
+           // load in the categories
+           $.ajax({                                                     
+                url: '/external/categories/load/',
+                beforeSend: function(xhr, request) {
+                    $('#categories').replaceWith('<span id="categories">Loading...</span>');
+                },
+                success: function(xdata, status, response){
+                    $('#categories').replaceWith('<span id="categories" class="center">' + xdata + '</span>');
+                },
+                complete: function(response) {                           
+                }
+            });
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="container">
+        suggested articles
+    </div>
+    <div class="container">
+        <span id="categories">category selection</span>
+    </div>
+</div>
+
+{% endblock %}
