@@ -45,7 +45,7 @@ def addarticle(request):
 	        title = title,
 	        body = body
 	    )
-            return redirect('/content/article/list/')
+            return redirect('/internal/content/article/list/')
         else:
             return HttpResponse('Error')
     else:
@@ -72,7 +72,7 @@ def editarticle(request, aid):
             article.title = title
             article.body = body
             article.save()
-            return redirect('/content/article/list/')
+            return redirect('/internal/content/article/list/')
         else:
             return HttpResponse('Error')
     else:
@@ -96,7 +96,7 @@ def showarticle(request, aid):
 @login_required
 def deletearticle(request, aid):
     Article.objects.get(id=aid).delete()
-    return redirect('/content/article/list/')
+    return redirect('/internal/content/article/list/')
     
 @login_required
 def addarticles(request):
@@ -121,7 +121,7 @@ def addarticles(request):
                     chunk=[]
                 lnum = lnum+1
             save_chunk(category, chunk)
-            return redirect('/content/article/list/')
+            return redirect('/internal/content/article/list/')
         else:
             return HttpResponse('Error')
     else:
