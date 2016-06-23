@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Show photo</h2>
+{% load staticfiles %}
+{% if entry %}
+<p>{{ libchain }}</p>
+<p><b>{{ entry.author }}: {{ entry.title }}</b></p>
+<p><img src="/static/uploads/internal/{{ entry.newname }}" alt="My image" height="63" width="63"/></p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>All photos</h2>
+<p>
+<a href="{% url 'addphoto' %}">add single</a>&nbsp;&nbsp;
+<a href="{% url 'addphotos' %}">add multiple</a>&nbsp;&nbsp;
+<a href="{% url 'internal_home' %}">back to home</a>
+</p>
+{% if entries %}
+<table cols="4" width="600">
+<tr>
+<th width="80" align="left" valign="top">Library</th>
+<th width="100" align="left">Author, Title, File</th>
+<th width="150" align="left" valign="top">File</th>
+<th width="50" align="left" valign="top">Action</th>
+</tr>
+<tr><td colspan="4"></td></tr>
+{% for entry in entries %}
+<tr>
+<td valign="top">{{ entry.library.name }}</td>
+<td valign="top">Author: {{ entry.author }}<br />
+Title: {{ entry.title }}<br />
+File: {{ entry.oldname }}</td>
+<td valign="top"><img src="/static/uploads/internal/{{ entry.newname }}" alt="My image" height="63" width="63"/></td>
+<td valign="top"><a href="{% url 'editphoto' entry.id %}">edit</a>&nbsp;<a href="{% url 'deletephoto' entry.id %}">delete</a>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+
+{% load staticfiles %}
+{% if entry %}
+<p>{{ libchain }}</p>
+<p><b>{{ entry.author }}: {{ entry.title }}</b></p>
+<p><img src="/static/uploads/internal/{{ entry.newname }}" alt="My image" height="63" width="63"/></p>
+{% endif %}
+
+{% endblock %}

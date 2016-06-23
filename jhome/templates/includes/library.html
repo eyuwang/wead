@@ -1,0 +1,6 @@
+<h2>Photo Catalog</h2>
+{% if libraries %}
+    {% for c in libraries %}
+    {{ c.0 }}<br />
+    {% endfor %}
+{% endif %}

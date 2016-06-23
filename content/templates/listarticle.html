@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>All articles</h2>
+<p>
+<a href="{% url 'addarticle' %}">add single</a>&nbsp;&nbsp;
+<a href="{% url 'addarticles' %}">add multiple</a>&nbsp;&nbsp;
+<a href="{% url 'internal_home' %}">back to home</a>
+</p>
+{% if entries %}
+<table cols="4" width="550">
+<tr>
+<th width="100" align="left">Category</th>
+<th width="100" align="left">Author</th>
+<th width="300" align="left">Title</th>
+<th width="50" align="left">Action</th>
+</tr>
+<tr><td colspan="4"></td></tr>
+{% for entry in entries %}
+<tr>
+<td>{{ entry.category.name }}</td>
+<td>{{ entry.author }}</td>
+<td><a href="{% url 'showarticle' entry.id %}">{{ entry.title }}</a></td>
+<td><a href="{% url 'editarticle' entry.id %}">edit</a>&nbsp;<a href="{% url 'deletearticle' entry.id %}">delete</a>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}

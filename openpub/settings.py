@@ -31,6 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'content.apps.ContentConfig',
+    'jhome.apps.JhomeConfig',
+    'library.apps.LibraryConfig',
     'editor.apps.EditorConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -146,6 +149,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_ROOT = '/static/uploads/internal/'
 
 # Put media static files in global static dirs 
 STATICFILES_DIRS = [

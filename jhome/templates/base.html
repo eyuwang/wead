@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Project</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/login.css" />
+    </head>
+
+    <body>
+    <div>
+	    {% if not user.is_anonymous %}
+	    User: {{ user }}&nbsp;|&nbsp;
+	    <a href="{% url 'django.contrib.auth.views.logout' %}">logout</a>
+	    {% endif %}
+    </div>
+    {% block content %}{% endblock content %}
+    </body>
+</html>

@@ -1,0 +1,6 @@
+<h2>Article Catalog</h2>
+{% if categories %}
+    {% for c in categories %}
+    {{ c.0 }}<br />
+    {% endfor %}
+{% endif %}

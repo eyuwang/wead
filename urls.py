@@ -10,6 +10,9 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^', include('editor.urls')),
     url(r'^editor/', include('editor.urls')),
+    url(r'^internal/content/', include('content.urls')),
+    url(r'^internal/library/', include('library.urls')),
+    url(r'^internal/', include('jhome.urls')),
 #    url(r'^accounts/', include('registration.backends.hmac.urls')),
 #    url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^accounts/profile/$', views.dispatch_ad_source, name='dispatch_ad_source'),

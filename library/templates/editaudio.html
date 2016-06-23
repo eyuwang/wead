@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Edit audio</h2>
+
+{% if err %}
+Error: {{ err }}
+{% endif %}
+<form name="audioform" action="/internal/library/audio/edit/{{ audio.id }}/" method="post">
+{% csrf_token %}
+<table cols="2" width="800">
+<tr>
+    <td><label for="id_author">Author:</label></td>
+    <td><input id="id_author" maxlength="200" name="author" type="text" value="{{ audio.author }}"/></td>
+</tr>
+<tr>
+    <td><label for="id_title">Title:</label></td>
+    <td><input id="id_title" maxlength="200" name="title" type="text" value="{{ audio.title }}"/></td>
+</tr>
+</table>
+<input type="submit" value="Submit">
+</form>
+
+{% endblock %}

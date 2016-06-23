@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Add photo</h2>
+
+{% if err %}
+Error: {{ err }}
+{% endif %}
+<form name="photoform" action="/internal/library/photo/add/" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<table cols="2" width="800">
+<tr>
+    <td><label for="id_library">library:</label></td>
+    <td><select id="id_library" name="library">
+    <option value="0" selected>select library</option>
+    {% for c in libraries %}
+    <option value="{{ c.1 }}">{{ c.0 }}</option>
+    {% endfor %}
+    </select></td>
+</tr>
+<tr>
+    <td><label for="id_author">Author:</label></td>
+    <td><input id="id_author" maxlength="200" name="author" type="text" /></td>
+</tr>
+<tr>
+    <td><label for="id_title">Title:</label></td>
+    <td><input id="id_title" maxlength="200" name="title" type="text" /></td>
+</tr>
+<tr>
+    <td valign="top"><label for="id_file">Photo:</label></td>
+    <td><input type="file" name="file" /></td>
+</tr>
+</table>
+<input type="submit" value="Add">
+</form>
+
+{% endblock %}

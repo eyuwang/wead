@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Show article</h2>
+
+{% if entry %}
+<p>{{ catchain }}</p>
+<p><b>{{ entry.author }}: {{ entry.title }}</b></p>
+<p>{{ entry.body|linebreaks }}</p>
+{% endif %}
+
+{% endblock %}

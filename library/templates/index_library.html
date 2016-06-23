@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<table cols="3" width="710">
+<tr>
+    <td valign="top" width="350">{% include "includes/plibrary.html" %}<br /></td>
+    <td width="10"></td>
+    <td valign="top" width="350">{% include "includes/alibrary.html" %}<br /></td>
+</tr>
+<tr>
+    <td valign="top">{% include "includes/photos.html" %}</td>
+    <td width="10">
+    <td valign="top">{% include "includes/audios.html" %}</td>
+</tr>
+</table>
+
+{% endblock %}

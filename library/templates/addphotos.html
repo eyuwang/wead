@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Add multiple photos</h2>
+{% if err %}
+Error: {{ err }}
+{% endif %}
+<form name="photosform" action="/internal/library/photo/addm/" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<table cols="2" width="800">
+<tr>
+    <td><label for="id_library">Library:</label></td>
+    <td><select id="id_library" name="library">
+    <option value="0" selected>select library</option>
+    {% for c in libraries %}
+    <option value="{{ c.1 }}">{{ c.0 }}</option>
+    {% endfor %}
+    </select></td>
+</tr>
+<tr>
+    <td valign="top"><label for="id_files">Photos:</label></td>
+    <td><input type="file" name="files" multiple/></td>
+</tr>
+</table>
+    <input type="submit" value="Upload">
+</form>
+<p><a href="{% url 'contenthome' %}">cancel</a></p>
+
+{% endblock %}
