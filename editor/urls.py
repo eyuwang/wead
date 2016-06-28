@@ -15,5 +15,5 @@ urlpatterns = [
     url(r'^source/dispatch/$', views.dispatch_ad_source, name='dispatch_ad_source'),
     url(r'^source/lib/$', views.pick_articles_from_lib, name='pick_articles_from_lib'),
     url(r'^external/categories/load/$', views.load_categories_from_lib, name='load_categories_from_lib'),
-
+    url(r'^external/category/suggest/$', views.load_articles_from_category, name='load_articles_from_categor'),
 ]

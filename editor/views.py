@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*
 import json
+import random
 
 from os import walk
 from utils.shortcuts import render_to
@@ -11,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.safestring import mark_safe
 from django_wysiwyg import clean_html
+from content.models import Category, Article
 
 
 # Helpers
@@ -342,6 +344,86 @@ def like_article(request, article_id):
 def pick_articles_from_lib(request):
     return {}
 
+def load_articles_from_category(request):
+    import sys
+    reload(sys)
+
+    #import pdb;pdb.set_trace()
+    sys.setdefaultencoding("utf-8")
+    category = request.GET['category']
+    articles = Article.objects.filter(category__name=category)
+    html = """
+        <script>
+            $('#suggest_more').click(function() {
+              $.ajax({                                                     
+                    url: '/external/category/suggest/',
+                    type: "GET",
+                    data: {"category": "%s"},
+                    dateType: "json",
+                    contentType: "application/json; charset=UTF-8",
+                    beforeSend: function(xhr, request) {
+                        $('#articles_suggested').replaceWith('<span id="articles_suggested"><p class="bg-primary">Loading...</p></span>');
+                    },
+                    success: function(xdata, status, response){
+                        $('#articles_suggested').replaceWith('<span id="articles_suggested" class="center">' + xdata + '</span>');
+                    },
+                    complete: function(response) {                           
+                    }
+                });
+            });
+        </script>
+    """ % category
+
+    if articles:
+        if len(articles) > 16:
+            suggested = random.sample(articles, 16)
+        else:
+            suggested = articles
+
+        html += """
+            <div class="container">
+                <button id="suggest_more" type="button" class="btn btn-sm btn-success pull-right">没有中意的，换一批文章</button>
+                <div class="col-md-15">
+                    <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>标题
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 
+                        </th>
+                        <th>作者
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 
+                        </th>
+                        <th>类别
+                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span> 
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>"""
+        for article in suggested:
+            html += """ 
+                      <tr>
+                        <td>
+                            <a href="#">%s</a>
+                        </td>
+                        <td>
+                            %s
+                        </td>
+                        <td>
+                            %s
+                        </td>
+                      </tr>""" % (article.title, article.author, article.category)
+        html += """  
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+        """
+
+    response = HttpResponse(html, content_type="text/html")
+    response['Content-Length'] = len(response.content)                          
+    response['Cache-Control'] ='no-cache, no-store'                             
+    return response     
+
 def load_categories_from_lib(request):
     content = {
         'category': {
@@ -363,7 +445,29 @@ def load_categories_from_lib(request):
         },
     }
 
-    html = "<table class='table'>"
+    html = """
+            <script>
+                $('img.cate-icon').on('click', function() {
+                  var category = this.id
+                  $.ajax({                                                     
+                        url: '/external/category/suggest/',
+                        type: "GET",
+                        data: {"category": category},
+                        dateType: "json",
+                        contentType: "application/json; charset=UTF-8",
+                        beforeSend: function(xhr, request) {
+                            $('#articles_suggested').replaceWith('<span id="articles_suggested">Loading...</span>');
+                        },
+                        success: function(xdata, status, response){
+                            $('#articles_suggested').replaceWith('<span id="articles_suggested" class="center">' + xdata + '</span>');
+                        },
+                        complete: function(response) {                           
+                        }
+                    });
+                });
+            </script>
+    """
+    html += "<table class='table'>"
     index = 0
     for category, category_obj in content['category'].iteritems():
         # 4 categories per row
@@ -373,7 +477,7 @@ def load_categories_from_lib(request):
             html += """
                 <tr>
                     <td>
-                      <img class="img-circle" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类">
+                      <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类">
                       
                       <div class="caption">
                          <h3>%(category)s</h3>
@@ -388,7 +492,7 @@ def load_categories_from_lib(request):
             # ends a row
             html += """
                     <td>
-                      <img class="img-circle" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类">
+                      <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类">
                       
                       <div class="caption">
                          <h3>%(category)s</h3>
@@ -404,7 +508,7 @@ def load_categories_from_lib(request):
             # in the same row
             html += """
                     <td>
-                      <img class="img-circle" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类">
+                      <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类">
                       
                       <div class="caption">
                          <h3>%(category)s</h3>

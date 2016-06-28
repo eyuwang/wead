@@ -31,10 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'editor.apps.EditorConfig',
     'content.apps.ContentConfig',
     'jhome.apps.JhomeConfig',
     'library.apps.LibraryConfig',
-    'editor.apps.EditorConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
