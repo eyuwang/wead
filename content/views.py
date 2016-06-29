@@ -109,18 +109,8 @@ def addarticles(request):
 
             category = Category.objects.get(id=category)
 
-            lnum = 0
-            lines = body.splitlines()
-            chunk=[]
-            while lnum<len(lines):
-                line = lines[lnum].strip()
-                if len(line)>0:
-                    chunk.append(line)
-                else:
-                    save_chunk(category, chunk)
-                    chunk=[]
-                lnum = lnum+1
-            save_chunk(category, chunk)
+            save_content(category, body)
+            
             return redirect('/internal/content/article/list/')
         else:
             return HttpResponse('Error')
@@ -133,12 +123,23 @@ def addarticles(request):
         'err': err
     }
     return render(request, 'addarticles.html', context=context)
+
+def isInt(s):
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False
     
-def save_chunk(category,chunk):
+def save_chunk(category, chunk, hasNoAuthor):
     if len(chunk)>=3:
 	title=chunk[0]
-	author=chunk[1]
-	poem='\n'.join(chunk[2:])
+	if hasNoAuthor:
+            author=''	    
+	    poem='\n'.join(chunk[1:])
+	else:
+	    author=chunk[1]
+	    poem='\n'.join(chunk[2:])
 
         article = Article.objects.get_or_create(
                 category = category,
@@ -148,3 +149,50 @@ def save_chunk(category,chunk):
             )
         return 0
     return -1
+
+def save_content(category, body):
+    # 100, 200, 300 - format: title, author, content
+    # articles are separated by blank lines
+    # 500 - number, title, content
+
+    lines = body.splitlines()
+
+    chunk=[]
+    lnum = 0
+  
+    # decide from the first line whether there is author
+    hasNoAuthor = 0
+    startLine = 0
+    while lnum<len(lines):
+        line = lines[lnum].strip()
+        if len(line) > 0:
+            if isInt(line):
+                hasNoAuthor = 1
+            break
+        else:
+            startLine = startLine + 1
+    
+    lines = lines[startLine:]
+    
+    if hasNoAuthor:
+        while lnum<len(lines):
+            line = lines[lnum].strip()
+            if len(line)>0:
+                if isInt(line):
+                    if lnum>0:
+                        save_chunk(category, chunk, hasNoAuthor)
+                        chunk=[]
+                else:
+                    chunk.append(line)
+            lnum = lnum+1
+        save_chunk(category, chunk, hasNoAuthor)
+    else:
+        while lnum<len(lines):
+            line = lines[lnum].strip()
+            if len(line)>0:
+                chunk.append(line)
+            else:
+                save_chunk(category, chunk, hasNoAuthor)
+                chunk=[]
+            lnum = lnum+1
+        save_chunk(category, chunk, hasNoAuthor)
