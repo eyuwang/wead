@@ -152,6 +152,14 @@
                 });
 */
             });
+
+            // Save the page
+            $("#she_ding3").click(function() {
+                var content = $('#yulan_body');
+                console.log(content.html());
+                $('#yulan_content').replaceWith(content.html());
+            });
+
         });
     </script>
 {% endblock %}
@@ -331,6 +339,7 @@
                     <div id="yulan_body" class="modal-body" style="background-color:#abf2c9;">
                         <div>
                             <div class="jumbotron" style="border:3px solid #87babc;">
+                                <!-- article original content -->
                                 <div id="yulan_content"></div>
                             </div>
                         </div>

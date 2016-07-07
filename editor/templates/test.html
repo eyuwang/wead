@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block head_extra %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#like_it').click(function(){
+               var article_id = $('#article_id').val()
+               $.ajax({
+                    url: '/source/lib/articles/' + article_id + '/like/',
+                    beforeSend: function(xhr, request) {
+                    },
+                    success: function(xdata, status, response){
+                        $('#num_like').replaceWith('<span id="num_like">'
+                                                     + xdata
+                                                     + '</span>');
+                    },
+                    complete: function(response) {
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+ <div class="jumbotron">
+<div>
+                            <div class="jumbotron" style="border:3px solid #87babc;">
+                                <!-- article original content -->
+                                <div id="yulan_content" style="">
+        <h4 id="article_title" class="text-center">2016美国美国旧金山湾区地产预测</h4>
+        <div id="article_body" class="container">
+            <p>由于旧金山湾区在2016年房屋市场的上市与库存数量仍然持续地位不足，可负担住房的审批与兴建也很有限，2012--2015年旧金山湾区房屋价格已经上涨了30--35 % 左右，持续较高的房屋价格也将直接影响2016年该地区的销售总量。另一方面，在房屋价格仍然在中地位可负担地区城市例如：Solano-索拉诺 县，San Joaquin 圣沃康县中古地区，Contra Costa 康曲卡斯特县的北部新兴城市--Fairfield, Davis, Tracy, Mountain House ,Manteca, Pittsburg, Antioch, Brentwood, Discovery Bay...以上地区与城市的商业，仓储，运输，建筑，制造，零售等行业的就业继续增加，而该地区城市的2016年房屋市场价格和销量也预计有5 % 左右的增长。</p>
+
+<p>--尽管加州房地产市场的价格与销量将在2016年保持稳定增长势头，但是全球经济正在放缓和调整，金融市场变幻莫测，贷款利率也有走高的风险等等将在不同程度冲击到明年的市场销售。总而言之，2016年的加州房地产市场将会同全美国范围继续维持售价和销量稳步增长通道之中，而湾区硅谷是2011-2012以来，房价复苏速度最快的地区，那让我们分析一下明年的房价走势如何： </p>
+
+<p>我们先回顾一下2015年的走势。2015年里湾区房价平均涨幅为10%，下面是Santa Clara 县和San Mateo县下各市过去12个月里的涨幅统计（9/2014-9/2015）：</p>
+
+<p>半岛由于地理位置居中，可南可北交通便利，靠近Facebook，Google等大公司，平均涨幅超过南湾Santa Clara县。下图中的Palo Alto实指East Palo Alto。</p>
+
+<p>下面的图表是加州地产协会（Californian Association of Realtors)首席经济分析师 Leslie Appleton-Young在几周前的会议上提交的成绩单。分别列出了2014数据，2015预测及2015实际数据的对比。可以看出了Leslie在房价，房屋成交量方面的预测还是相当精准的。由于2015全球经济低迷，股灾不断，能源价格探底，各方面原因导致加息有点像狼来了，俩年来FOMC加息光说不练。犹豫不决的态度造成了Leslie在这项预测的偏差。</p>
+
+<p>我们从房贷利率，房屋需求量，工作机会增长这几个角度分析一下明年的走势。</p>
+
+<p>2015十月份的FOMC会议基本已经确定于12月加息。最近的经济数据也很支持这一决定，加之FOMC必须要对加息有个态度了，长期犹疑对市场的伤害也是不容忽视的。并且迟迟不加息会导致下一个萧条来临时，没有手段可用。所以小编非常同意明年利息会增长这个观点。基本上明年中利息大约会在4.5%左右，到2016年底可能升至5%。</p>
+
+<p>湾区房价的上涨主要是供求不平衡造成的。据统计，加州房屋每年的缺口在10万套左右。明年这种不平衡将持续，但有所减轻。</p>
+
+<p>明年的上市房屋量会有所增长。这个主要得益于shadow inventory (影库存）的上市。Shadow Inventory是指应上市而由于种种原因还未上市的房屋。比如已经在法拍，短售，银行拍卖屋程序里但还未放到市场上的房子，或有卖屋计划但正在等待更好出售时机的房子。目前短售，拍卖等房屋已经少之又少了，但确实有不少业主的售屋计划在等待最佳时机。2016年对此类业主是最佳时机。所以这类的影库存会投放到市场上。</p>
+
+<p>2016新屋开工率增长26%,从2015年的98,500套新屋开工，增加到124,600套开工。 </p>
+
+<p>以上俩点都从一定程度缓解湾区的房荒。</p>
+
+<p>湾区工作机会仍是在不断增加之中。旧金山湾区的失业率可能会再下降5%以下。到2016年时，旧金山湾区将达到“充分就业”水平。各大公司的圈地战依然火热，新园区/办公楼纷纷开工入住。湾区房市在未来1-2年里是不缺高薪的工程师买家的，这意味着2016年依然会是一个上涨年。</p>
+
+<p>那么2016的房价走势如何？根据加地产协会首席分析师Leslie的预测，明年加州房价平均涨幅放缓，约为3.2%左右。湾区的特殊性决定了我们一定涨的比平均要高。凯宇根据历年（1996-2015）的数据分析认为湾区的平均涨幅应在5-6%左右，大致为2015涨幅的一半。</p>
+        </div>
+    </div>
+                            </div>
+                        </div>
+</div>
+
+<hr>
+
+<input id="article_id" type="hidden" value={{ article_id }}></input>
+<span class="glyphicon glyphicon-book" aria-hidden="true"></span> &nbsp;{{ article_read }} &nbsp; &nbsp;
+<a id="like_it" href='#' class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></a> &nbsp;<span id="num_like">{{ article_like }}</span>
+{% endblock %}

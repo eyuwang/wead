@@ -34,6 +34,12 @@ def _get_logo_size():
 def _center_logo():
     return 'class="img-responsive center-block"'
 
+@render_to('test.html')
+def test(request):
+    return {
+    }
+
+
 @render_to('home.html')
 def editor1(request):
     return {
