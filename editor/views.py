@@ -32,7 +32,6 @@ def _center_logo():
     return 'class="img-responsive center-block"'
 
 @render_to('home.html')                                                
-@login_required
 def editor1(request):
     return {
     }
