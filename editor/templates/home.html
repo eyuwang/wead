@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block head_extra %}
     <script type="text/javascript">
-        $(document).ready(function(){ 
+        $(document).ready(function(){
            // load some hot articles
-           $.ajax({                                                     
+           $.ajax({
                 url: '/external/articles/load/hot/',
                 beforeSend: function(xhr, request) {
                     $('#hot_articles').replaceWith('<ol id="hot_articles">Loading...</ol>');
@@ -11,12 +11,12 @@
                 success: function(xdata, status, response){
                     $('#hot_articles').replaceWith(xdata);
                 },
-                complete: function(response) {                           
+                complete: function(response) {
                 }
             });
 
-           // load some hot users 
-           $.ajax({                                                     
+           // load some hot users
+           $.ajax({
                 url: '/users/load/hot/',
                 beforeSend: function(xhr, request) {
                     $('#hot_users').replaceWith('<ol id="hot_users">Loading...</ol>');
@@ -24,12 +24,12 @@
                 success: function(xdata, status, response){
                     $('#hot_users').replaceWith(xdata);
                 },
-                complete: function(response) {                           
+                complete: function(response) {
                 }
             });
 
            // load in the categories
-           $.ajax({                                                     
+           $.ajax({
                 url: '/external/categories/load/',
                 beforeSend: function(xhr, request) {
                     $('#categories').replaceWith('<span id="categories">Loading...</span>');
@@ -37,7 +37,7 @@
                 success: function(xdata, status, response){
                     $('#categories').replaceWith('<span id="categories" class="center">' + xdata + '</span>');
                 },
-                complete: function(response) {                           
+                complete: function(response) {
                 }
             });
 
