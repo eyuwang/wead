@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block head_extra %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#like_it').click(function(){
+               var article_id = $('#article_id').val()
+               $.ajax({
+                    url: '/source/lib/articles/' + article_id + '/like/',
+                    beforeSend: function(xhr, request) {
+                    },
+                    success: function(xdata, status, response){
+                        $('#num_like').replaceWith('<span id="num_like">'
+                                                     + xdata
+                                                     + '</span>');
+                    },
+                    complete: function(response) {
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+ <div class="jumbotron">
+    <a href="/source/lib/preview/{{ article_id }}/"><button type="button" class="btn btn-warning btn-sm">植入广告</button></a>
+    <div id="article_content" style="background-color:#abf2c9; padding: 10px 40px;">
+        <h4 class="text-center">{{ article_title|safe }}</h4>
+        <h5 class="text-center">{{ article_author }}</h5>
+        {{ article_content|linebreaks }}
+    </div>
+</div>
+
+<hr>
+
+<input id="article_id" type="hidden" value={{ article_id }}></input>
+<span class="glyphicon glyphicon-book" aria-hidden="true"></span> &nbsp;{{ article_read }} &nbsp; &nbsp;
+<a id="like_it" href='#' class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></a> &nbsp;<span id="num_like">{{ article_like }}</span>
+{% endblock %}
