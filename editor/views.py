@@ -11,6 +11,9 @@ from .models import Articles, Users
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import redirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.utils.safestring import mark_safe
 from django_wysiwyg import clean_html
 from content.models import Category, Article
@@ -31,13 +34,13 @@ def _get_logo_size():
 def _center_logo():
     return 'class="img-responsive center-block"'
 
-@render_to('home.html')                                                
+@render_to('home.html')
 def editor1(request):
     return {
     }
 
 
-@render_to('editor.html')                                                
+@render_to('editor.html')
 def editor(request):
     writer_articles_list = Articles.objects.all()
     paginator = Paginator(writer_articles_list, 25)
@@ -69,14 +72,14 @@ def editor(request):
                 )
                 article.content = article_content
                 # Parse article paragraph count
-                article.num_para = _get_paragraph_count(article_content) 
+                article.num_para = _get_paragraph_count(article_content)
                 article.save()
             except Articles.DoesNotExist:
                 Articles.objects.get_or_create(
                     author = user,
                     title = article_title,
                     content = article_content,
-                    num_para = _get_paragraph_count(article_content) 
+                    num_para = _get_paragraph_count(article_content)
                 )
 
             writer_articles_list = Articles.objects.all()
@@ -108,17 +111,17 @@ def editor(request):
         'logged_in': _logged_in(request)
     }
 
-@render_to('show_subscriber_benefits.html')                                                
+@render_to('show_subscriber_benefits.html')
 def show_subscriber_benefits(request):
     return {
     }
 
-@render_to('show_member_benefits.html')                                                
+@render_to('show_member_benefits.html')
 def show_member_benefits(request):
     return {
     }
 
-@render_to('show_writer_articles.html')                                                
+@render_to('show_writer_articles.html')
 def show_writer_articles_list(request):
     writer_articles_list = Articles.objects.all()
     paginator = Paginator(writer_articles_list, 25)
@@ -141,7 +144,7 @@ def show_writer_articles_list(request):
         'user': user
     }
 
-@render_to('editor.html')                                                
+@render_to('editor.html')
 def edit_writer_article(request, article_id):
     try:
         writer_article = Articles.objects.get(id=article_id)
@@ -156,7 +159,7 @@ def edit_writer_article(request, article_id):
         'logged_in': _logged_in(request)
     }
 
-@render_to('editor.html')                                                
+@render_to('editor.html')
 def add_writer_article(request):
     form = ArticleForm()
     return {
@@ -164,7 +167,7 @@ def add_writer_article(request):
         'logged_in': _logged_in(request)
     }
 
-@render_to('show_writer_article.html')                                                
+@render_to('show_writer_article.html')
 def show_writer_article(request, article_id):
     try:
         writer_article = Articles.objects.get(id=article_id)
@@ -199,7 +202,7 @@ def show_writer_article(request, article_id):
         }
 
 @login_required
-@render_to('show_user.html')                                                
+@render_to('show_user.html')
 def show_account(request):
     try:
         user = Users.objects.get(username=request.user.username)
@@ -216,14 +219,14 @@ def show_account(request):
         'has_uploads': len(files_uploaded)
     }
 
-@render_to('show_source.html')                                                
+@render_to('show_source.html')
 def dispatch_ad_source(request):
     return {
     }
 
 
 @login_required
-@render_to('file_upload.html')                                                
+@render_to('file_upload.html')
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -242,7 +245,7 @@ def upload_file(request):
         'user': request.user.username
     }
 
-@render_to('ad_preview.html')                                                
+@render_to('ad_preview.html')
 def ad_placement_preview(request, article_id):
     if request.method == 'POST':
         article = Articles.objects.get(id=article_id)
@@ -255,7 +258,7 @@ def ad_placement_preview(request, article_id):
 
         for para in content.split('\r\n\r\n'):
             para_processed = False
-           
+
             # process head
             if para_index == 0:
                 for logo in ad_placement_positions:
@@ -263,7 +266,7 @@ def ad_placement_preview(request, article_id):
                     if position and int(position) == 1:
                         if not para_processed:
                             content_builder += '%s %s' % ('<img src="/static/uploads/%s/%s" %s %s/>' % (
-                                                    request.user.username, 
+                                                    request.user.username,
                                                     logo_filename,
                                                     center_logo(),
                                                     _get_logo_size()
@@ -301,7 +304,7 @@ def ad_placement_preview(request, article_id):
                     content_builder += para
                     para_processed = True
 
-            # process body 
+            # process body
             else:
                 for logo in ad_placement_positions:
                     logo_filename, position, place_at_para = logo
@@ -335,7 +338,7 @@ def ad_placement_preview(request, article_id):
                     logo_filename, position, place_at_para = logo
                     if position and int(position) == 3:
                         content_builder += '<img src="/static/uploads/%s/%s" %s %s/>' % (
-                                            request.user.username, 
+                                            request.user.username,
                                             logo_filename,
                                             center_logo(),
                                             _get_logo_size()
@@ -358,11 +361,18 @@ def like_article(request, article_id):
     writer_article.save()
     return HttpResponse(writer_article.num_like, content_type="text/plain")
 
-@render_to('pick_from_lib.html')            
+def like_lib_article(request, article_id):
+    lib_article = Article.objects.get(id=article_id)
+    lib_article.num_like += 1
+    lib_article.save()
+    return HttpResponse(lib_article.num_like, content_type="text/plain")
+
+
+@render_to('pick_from_lib.html')
 def pick_articles_from_lib(request):
     return {}
 
-@render_to('lib_ad_preview.html')                                                
+@render_to('lib_ad_preview.html')
 def lib_ad_placement_preview(request, article_id):
     article = Article.objects.get(id=article_id)
     files_uploaded = []
@@ -386,7 +396,7 @@ def load_articles_from_category(request):
     html = """
         <script>
             $('#suggest_more').click(function() {
-              $.ajax({                                                     
+              $.ajax({
                     url: '/external/category/suggest/',
                     type: "GET",
                     data: {"category": "%s"},
@@ -398,7 +408,7 @@ def load_articles_from_category(request):
                     success: function(xdata, status, response){
                         $('#articles_suggested').replaceWith('<span id="articles_suggested" class="center">' + xdata + '</span>');
                     },
-                    complete: function(response) {                           
+                    complete: function(response) {
                     }
                 });
             });
@@ -419,19 +429,19 @@ def load_articles_from_category(request):
                     <thead>
                       <tr>
                         <th>标题
-                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                         </th>
                         <th>作者
-                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                         </th>
                         <th>类别
-                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span> 
+                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                         </th>
                       </tr>
                     </thead>
                     <tbody>"""
         for article in suggested:
-            html += """ 
+            html += """
                       <tr>
                         <td>
                             <a href="/source/lib/preview/%s/">%s</a>
@@ -443,7 +453,7 @@ def load_articles_from_category(request):
                             %s
                         </td>
                       </tr>""" % (article.id, article.title, article.author, article.category)
-        html += """  
+        html += """
                     </tbody>
                   </table>
               </div>
@@ -451,9 +461,9 @@ def load_articles_from_category(request):
         """
 
     response = HttpResponse(html, content_type="text/html")
-    response['Content-Length'] = len(response.content)                          
-    response['Cache-Control'] ='no-cache, no-store'                             
-    return response     
+    response['Content-Length'] = len(response.content)
+    response['Cache-Control'] ='no-cache, no-store'
+    return response
 
 def load_sample_articles_from_lib(category_name):
     """
@@ -473,9 +483,9 @@ def load_sample_articles_from_lib(category_name):
 
         html += """<ul class="list-unstyled">"""
         for article in suggested:
-            html += """ 
+            html += """
                       <li>
-                          <a href="/source/lib/preview/%s/">%s</a>
+                          <a href="/source/lib/articles/show/%s/">%s</a>
                       </li>""" % (article.id, article.title)
         html += """   <li class="pull-left"> &gt;&gt;
                           <a href="/source/lib/preview/2/">进入频道</a>
@@ -484,9 +494,9 @@ def load_sample_articles_from_lib(category_name):
 
     return html
 
-def load_hot_articles_from_lib(request): 
+def load_hot_articles_from_lib(request):
     """
-    Load some hot artiles 
+    Load some hot artiles
     """
     import sys
     reload(sys)
@@ -500,24 +510,24 @@ def load_hot_articles_from_lib(request):
         html += """
                   <li>
                       <span>%s. <span>
-                      <a href="/source/lib/preview/%s/">%s</a>
+                      <a href="/source/lib/articles/show/%s/">%s</a>
                   </li>""" % (index, article.id, article.title)
         index += 1
     html += "</ol>"
     response = HttpResponse(html, content_type="text/html")
-    response['Content-Length'] = len(response.content)                          
-    response['Cache-Control'] ='no-cache, no-store'                             
+    response['Content-Length'] = len(response.content)
+    response['Cache-Control'] ='no-cache, no-store'
     return response
 
-def load_hot_users(request): 
+def load_hot_users(request):
     """
-    Load some hot users 
+    Load some hot users
     """
     import sys
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
-    #FIXME: add hotness to users 
+    #FIXME: add hotness to users
     users = Users.objects.all()
     html = '<ol id="hot_users" class="list-unstyled">'
     for user in users:
@@ -528,8 +538,8 @@ def load_hot_users(request):
                   </li>""" % (user.username)
     html += "</ol>"
     response = HttpResponse(html, content_type="text/html")
-    response['Content-Length'] = len(response.content)                          
-    response['Cache-Control'] ='no-cache, no-store'                             
+    response['Content-Length'] = len(response.content)
+    response['Cache-Control'] ='no-cache, no-store'
     return response
 
 def load_categories_from_lib(request):
@@ -569,7 +579,7 @@ def load_categories_from_lib(request):
             <script>
                 $('img.cate-icon').on('click', function() {
                   var category = this.id
-                  $.ajax({                                                     
+                  $.ajax({
                         url: '/external/category/suggest/',
                         type: "GET",
                         data: {"category": category},
@@ -581,7 +591,7 @@ def load_categories_from_lib(request):
                         success: function(xdata, status, response){
                             $('#articles_suggested').replaceWith('<span id="articles_suggested" class="center">' + xdata + '</span>');
                         },
-                        complete: function(response) {                           
+                        complete: function(response) {
                         }
                     });
                 });
@@ -600,7 +610,7 @@ def load_categories_from_lib(request):
                     <tr>
                         <td width="25%%">
                           <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类" />
-                          
+
                           <div class="caption">
                              <span>%(sample)s</span>
                           </div>
@@ -614,7 +624,7 @@ def load_categories_from_lib(request):
                 html += """
                         <td width="25%%">
                           <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类" />
-                          
+
                           <div class="caption">
                              <span>%(sample)s</span>
                           </div>
@@ -629,7 +639,7 @@ def load_categories_from_lib(request):
                 html += """
                         <td width="25%%">
                           <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类" />
-                          
+
                           <div class="caption">
                              <span>%(sample)s</span>
                           </div>
@@ -662,8 +672,8 @@ def load_categories_from_lib(request):
 
     html += "<a href='#' class='pull-right'>更多类别...</a>"
     response = HttpResponse(html, content_type="text/html")
-    response['Content-Length'] = len(response.content)                          
-    response['Cache-Control'] ='no-cache, no-store'                             
+    response['Content-Length'] = len(response.content)
+    response['Cache-Control'] ='no-cache, no-store'
     return response
 
 def lib_ad_placement_preview_refresh(request, template_id, logo_filename):
@@ -676,7 +686,7 @@ def lib_ad_placement_preview_refresh(request, template_id, logo_filename):
         if int(template_id) == 1:
             # head
             html += '<img src="/static/uploads/%s/%s" %s %s/>' % (
-                        request.user.username, 
+                        request.user.username,
                         logo_filename,
                         _center_logo(),
                         _get_logo_size()
@@ -686,13 +696,13 @@ def lib_ad_placement_preview_refresh(request, template_id, logo_filename):
                 <div id="article_body" class="container">%s</div>
             """ % (body['article_title'], body['article_body'])
         elif int(template_id) == 2:
-            # bottm 
+            # bottom
             html += """
                 <h4 id="article_title" class="text-center">%s</h4>
                 <div id="article_body" class="container">%s</div>
             """ % (body['article_title'], body['article_body'])
             html += '<img src="/static/uploads/%s/%s" %s %s/>' % (
-                        request.user.username, 
+                        request.user.username,
                         logo_filename,
                         _center_logo(),
                         _get_logo_size()
@@ -704,7 +714,7 @@ def lib_ad_placement_preview_refresh(request, template_id, logo_filename):
               <h4 id="article_title" class="text-center">%s</h4>
               <div id="article_body" class="container">%s</div>
             """ % (
-                request.user.username, 
+                request.user.username,
                 logo_filename,
                 _get_logo_size(),
                 body['article_title'],
@@ -717,7 +727,7 @@ def lib_ad_placement_preview_refresh(request, template_id, logo_filename):
               <h4 id="article_title" class="text-center">%s</h4>
               <div id="article_body" class="container">%s</div>
             """ % (
-                request.user.username, 
+                request.user.username,
                 logo_filename,
                 _get_logo_size(),
                 body['article_title'],
@@ -725,8 +735,35 @@ def lib_ad_placement_preview_refresh(request, template_id, logo_filename):
             )
 
     response = HttpResponse(html, content_type="text/html")
-    response['Content-Length'] = len(response.content)                          
-    response['Cache-Control'] ='no-cache, no-store'                             
+    response['Content-Length'] = len(response.content)
+    response['Cache-Control'] ='no-cache, no-store'
     return response
 
+@render_to('show_lib_article.html')
+def lib_show_article(request, article_id):
+    """
+    Show lib article content
+    """
+    try:
+        lib_article = Article.objects.get(id=article_id)
+        lib_article.num_read += 1
+        lib_article.save()
 
+        return {
+            'article_content': lib_article.content,
+            'article_title': lib_article.title,
+            'article_author': lib_article.author,
+            'article_id': article_id,
+            'article_like': lib_article.num_like,
+            'article_read': lib_article.num_read,
+            'article_para': lib_article.num_para,
+        }
+    except Article.DoesNotExist:
+        # 404
+        return redirect('not_found', permanent=True)
+
+def handler404(request):
+    response = render_to_response('404.html', {},
+                   context_instance=RequestContext(request))
+    response.status_code = 404
+    return response

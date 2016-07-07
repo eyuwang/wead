@@ -6,28 +6,28 @@
 
     <script>
         $(document).ready(function(){
-           function getCookie(name) {                                              
-                var cookieValue = null;                                             
-                if (document.cookie && document.cookie != '') {                     
-                    var cookies = document.cookie.split(';');                       
-                    for (var i = 0; i < cookies.length; i++) {                      
-                        var cookie = jQuery.trim(cookies[i]);                       
+           function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
                         if (cookie.substring(0, name.length + 1) == (name + '=')) {
                             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;                                                  
-                        }                                                           
-                    }                                                               
-                }                                                                   
-                return cookieValue;                                                 
-            }                                              
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
             var csrftoken = getCookie('csrftoken');
- 
+
             $('#cp4').colorpicker().on('changeColor', function(e) {
                 $('body')[0].style.backgroundColor = e.color.toHex();
             });
 
             $('#color_radio_form input').on('change', function() {
-                $('body')[0].style.backgroundColor = $('input[name="color_radio"]:checked', '#color_radio_form').val(); 
+                $('body')[0].style.backgroundColor = $('input[name="color_radio"]:checked', '#color_radio_form').val();
             });
 
 
@@ -45,7 +45,7 @@
                 var article_title = $("#article_title").html()
                 var article_body = $("#article_body").html()
                 var backgroud_decorated = $("#article_decorated")[0].style.backgroundColor;
-                $.ajax({                                                     
+                $.ajax({
                     url: '/source/lib/preview/refresh/' + template_selected + '/' + logo_selected +'/',
                     method: "POST",
                     dataType: "json",
@@ -53,25 +53,25 @@
                     processData: false,
                     contentType: "application/json; charset=UTF-8",
                     beforeSend: function(xhr, request) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken); 
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
                         backgroud_decorated = $("#article_decorated")[0].style.backgroundColor;
                     },
                     success: function(xdata, status, response){
                     },
-                    complete: function(response) {                           
+                    complete: function(response) {
                         $('#article_decorated').replaceWith(
                             '<div class="container" id="article_decorated">' +
                             response.responseText +
                             '</div>'
                         );
-                        $('#article_decorated')[0].style.backgroundColor = backgroud_decorated; 
+                        $('#article_decorated')[0].style.backgroundColor = backgroud_decorated;
                     }
                 });
-            }); 
+            });
 
             $("input:radio[name=logo_form]").click(function() {
                 logo_selected = $(this).val();
-            }); 
+            });
 
             // Update current rendering upon template and log change
             // This is updating logo event
@@ -87,7 +87,7 @@
                 var article_title = $("#article_title").html()
                 var article_body = $("#article_body").html()
                 var backgroud_decorated = $("#article_decorated")[0].style.backgroundColor;
-                $.ajax({                                                     
+                $.ajax({
                     url: '/source/lib/preview/refresh/' + template_selected + '/' + logo_selected +'/',
                     method: "POST",
                     dataType: "json",
@@ -95,26 +95,26 @@
                     processData: false,
                     contentType: "application/json; charset=UTF-8",
                     beforeSend: function(xhr, request) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken); 
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
                         backgroud_decorated = $("#article_decorated")[0].style.backgroundColor;
                     },
                     success: function(xdata, status, response){
                     },
-                    complete: function(response) {                           
+                    complete: function(response) {
                         $('#article_decorated').replaceWith(
                             '<div class="container" id="article_decorated">' +
                             response.responseText +
                             '</div>'
                         );
-                        $('#article_decorated')[0].style.backgroundColor = backgroud_decorated; 
+                        $('#article_decorated')[0].style.backgroundColor = backgroud_decorated;
                     }
                 });
-            }); 
+            });
 
 
             // Update background color
             $('#solid_color_background_form input').on('change', function() {
-                $('#article_decorated')[0].style.backgroundColor = $('input[name="color_radio"]:checked', '#solid_color_background_form').val(); 
+                $('#article_decorated')[0].style.backgroundColor = $('input[name="color_radio"]:checked', '#solid_color_background_form').val();
             });
 
             $("#yu_lan").click(function() {
@@ -126,11 +126,11 @@
                         article_decorated +
                         '</div>'
                 );
-                $('#yulan_content')[0].style.backgroundColor = background_decorated; 
-                $('#yulan_body')[0].style.backgroundColor = body_background_decorated; 
+                $('#yulan_content')[0].style.backgroundColor = background_decorated;
+                $('#yulan_body')[0].style.backgroundColor = body_background_decorated;
 
                 /*
-                $.ajax({                                                     
+                $.ajax({
                     url: '/source/lib/preview/refresh/' + template_selected + '/' + logo_selected +'/',
                     method: "POST",
                     dataType: "json",
@@ -138,11 +138,11 @@
                     processData: false,
                     contentType: "application/json; charset=UTF-8",
                     beforeSend: function(xhr, request) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken); 
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
                     },
                     success: function(xdata, status, response){
                     },
-                    complete: function(response) {                           
+                    complete: function(response) {
                         $('#article_decorated').replaceWith(
                             '<div class="container" id="article_decorated">' +
                             response.responseText +
@@ -151,7 +151,7 @@
                     }
                 });
 */
-            }); 
+            });
         });
     </script>
 {% endblock %}
@@ -195,7 +195,7 @@
                     <li><a href="#modal2" data-toggle="modal" data-target="#modal2">背景图片</a></li>
                     <li><a href="#">背景音乐</a></li>
                   </ul>
-                </div>  
+                </div>
             </div>
         </div>
 
@@ -268,7 +268,7 @@
                         </form>
                         <div>&nbsp;</div>
                         <span class="label label-pill label-primary">自定义背景色</span>
-                        <a href="#" class="btn btn-xs btn-info" id="cp4">调用色盘</a>    
+                        <a href="#" class="btn btn-xs btn-info" id="cp4">调用色盘</a>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -351,7 +351,7 @@
     <div id="article_decorated">
         <h4 id="article_title" class="text-center">{{ lib_article.title|safe }}</h4>
         <div id="article_body" class="container">
-            {{ lib_article.body|linebreaks }}
+            {{ lib_article.content|linebreaks }}
         </div>
     </div>
 </div>

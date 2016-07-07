@@ -53,12 +53,12 @@ class UsersModelAuth(models.Model):
 
     def get_full_name(self):
         return self.email
-   
+
     def get_short_name(self):
         return self.email
 
     def __str__(self):
-        return self.email 
+        return self.email
 
     def get_username(self):
         return self.USERNAME_FIELD
@@ -94,7 +94,7 @@ class Users(AbstractBaseUser):
     last_name = models.CharField(max_length=128, null=True)
     date_of_birth = models.DateField(null=True)
     date_joined = models.DateTimeField(auto_now_add=True, null=True)
-    # By default, user is active as soon as he reigsters 
+    # By default, user is active as soon as he reigsters
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
@@ -106,7 +106,7 @@ class Users(AbstractBaseUser):
 
     def get_full_name(self):
         return self.username
-   
+
     def get_short_name(self):
         return self.username
 
@@ -140,7 +140,7 @@ def user_registered_callback(sender, request, **kwargs):
     user.user_type = request.POST["user_type"]
     # Already saved
     #user.save()
- 
+
 user_registered.connect(user_registered_callback)
 
 class Articles(models.Model):
@@ -182,7 +182,7 @@ class UploadFile(models.Model):
 #    author = models.CharField(max_length=30)
 #    body = models.TextField('Content')
 #    added = models.DateTimeField('date added',null=True,auto_now_add=True)
-#                                                                                                        
+#
 #    def __str__(self):
-#        return '%s: %s' % (self.author.encode('utf-8').strip(), 
+#        return '%s: %s' % (self.author.encode('utf-8').strip(),
 #                           self.title.encode('utf-8').strip())
