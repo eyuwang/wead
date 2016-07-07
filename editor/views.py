@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*
 import json
+import collections
 import random
 
 from os import walk
@@ -25,7 +26,17 @@ def _logged_in(request):
     return 0
 
 def _get_logo_size():
-    return 'class="img-responsive center-block" style="width:204px;height:136px;"'
+    return 'style="width:280px;height:176px;"'
+
+def _center_logo():
+    return 'class="img-responsive center-block"'
+
+@render_to('home.html')                                                
+@login_required
+def editor1(request):
+    return {
+    }
+
 
 @render_to('editor.html')                                                
 @login_required
@@ -97,6 +108,18 @@ def editor(request):
         'form': form,
         'articles_list': articles ,
         'logged_in': _logged_in(request)
+    }
+
+@render_to('show_subscriber_benefits.html')                                                
+@login_required
+def show_subscriber_benefits(request):
+    return {
+    }
+
+@render_to('show_member_benefits.html')                                                
+@login_required
+def show_member_benefits(request):
+    return {
     }
 
 @render_to('show_writer_articles.html')                                                
@@ -245,22 +268,23 @@ def ad_placement_preview(request, article_id):
            
             # process head
             if para_index == 0:
-               # import pdb;pdb.set_trace()
                 for logo in ad_placement_positions:
                     logo_filename, position, place_at_para = logo
                     if position and int(position) == 1:
                         if not para_processed:
-                            content_builder += '%s %s' % ('<img src="/static/uploads/%s/%s" %s/>' % (
+                            content_builder += '%s %s' % ('<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                     request.user.username, 
                                                     logo_filename,
+                                                    center_logo(),
                                                     _get_logo_size()
                                                  ),
                                                  para)
                             para_processed = True
                         else:
-                            content_builder += '<img src="/static/uploads/%s/%s" %s/>' % (
+                            content_builder += '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                 request.user.username,
                                                 logo_filename,
+                                                center_logo(),
                                                 _get_logo_size()
                                             )
                         ad_placement_processed.append(logo)
@@ -268,16 +292,18 @@ def ad_placement_preview(request, article_id):
                         if not para_processed:
                             content_builder += '%s %s' % (
                                             para,
-                                            '<img src="/static/uploads/%s/%s" %s/>' % (
+                                            '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                 request.user.username,
                                                 logo_filename,
+                                                center_logo(),
                                                 _get_logo_size()
                                             ))
                             para_processed = True
                         else:
-                            content_builder += '<img src="/static/uploads/%s/%s" %s/>' % (
+                            content_builder += '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                             request.user.username,
                                             logo_filename,
+                                            center_logo(),
                                             _get_logo_size()
                                         )
                         ad_placement_processed.append(logo)
@@ -294,16 +320,18 @@ def ad_placement_preview(request, article_id):
                             if not para_processed:
                                 content_builder += '%s %s' % (
                                                 para,
-                                                '<img src="/static/uploads/%s/%s" %s/>' % (
+                                                '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                     request.user.username,
                                                     logo_filename,
+                                                    center_logo(),
                                                     _get_logo_size()
                                                 ))
                                 para_processed = True
                             else:
-                                content_builder += '<img src="/static/uploads/%s/%s" %s/>' % (
+                                content_builder += '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                     request.user.username,
                                                     logo_filename,
+                                                    center_logo(),
                                                     _get_logo_size()
                                                 )
                             ad_placement_processed.append(logo)
@@ -316,9 +344,10 @@ def ad_placement_preview(request, article_id):
                 for logo in ad_placement_positions:
                     logo_filename, position, place_at_para = logo
                     if position and int(position) == 3:
-                        content_builder += '<img src="/static/uploads/%s/%s" %s/>' % (
+                        content_builder += '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                             request.user.username, 
                                             logo_filename,
+                                            center_logo(),
                                             _get_logo_size()
                                          )
                 if not para_processed:
@@ -344,12 +373,26 @@ def like_article(request, article_id):
 def pick_articles_from_lib(request):
     return {}
 
+@login_required
+@render_to('lib_ad_preview.html')                                                
+def lib_ad_placement_preview(request, article_id):
+    article = Article.objects.get(id=article_id)
+    files_uploaded = []
+    for (_, _, filenames) in walk('static/uploads/%s' % request.user.username):
+        files_uploaded.extend(filenames)
+        break
+
+
+    return {
+        'lib_article': article,
+        'files_uploaded': files_uploaded
+    }
+
 def load_articles_from_category(request):
     import sys
     reload(sys)
-
-    #import pdb;pdb.set_trace()
     sys.setdefaultencoding("utf-8")
+
     category = request.GET['category']
     articles = Article.objects.filter(category__name=category)
     html = """
@@ -403,7 +446,7 @@ def load_articles_from_category(request):
             html += """ 
                       <tr>
                         <td>
-                            <a href="#">%s</a>
+                            <a href="/source/lib/preview/%s/">%s</a>
                         </td>
                         <td>
                             %s
@@ -411,7 +454,7 @@ def load_articles_from_category(request):
                         <td>
                             %s
                         </td>
-                      </tr>""" % (article.title, article.author, article.category)
+                      </tr>""" % (article.id, article.title, article.author, article.category)
         html += """  
                     </tbody>
                   </table>
@@ -424,26 +467,115 @@ def load_articles_from_category(request):
     response['Cache-Control'] ='no-cache, no-store'                             
     return response     
 
+def load_sample_articles_from_lib(category_name):
+    """
+    Load 3 sample articles from lib
+    """
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
+    html = ''
+    articles = Article.objects.filter(category__name=category_name)
+    if articles:
+        if len(articles) > 3:
+            suggested = random.sample(articles, 3)
+        else:
+            suggested = articles
+
+        html += """<ul class="list-unstyled">"""
+        for article in suggested:
+            html += """ 
+                      <li>
+                          <a href="/source/lib/preview/%s/">%s</a>
+                      </li>""" % (article.id, article.title)
+        html += """   <li class="pull-left"> &gt;&gt;
+                          <a href="/source/lib/preview/2/">进入频道</a>
+                      </li>
+                   </ul>"""
+
+    return html
+
+def load_hot_articles_from_lib(request): 
+    """
+    Load some hot artiles 
+    """
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
+    #FIXME: add hotness to article
+    articles = Article.objects.all()
+    index = 1
+    html = '<ol id="hot_articles" class="list-unstyled">'
+    for article in articles[:13]:
+        html += """
+                  <li>
+                      <span>%s. <span>
+                      <a href="/source/lib/preview/%s/">%s</a>
+                  </li>""" % (index, article.id, article.title)
+        index += 1
+    html += "</ol>"
+    response = HttpResponse(html, content_type="text/html")
+    response['Content-Length'] = len(response.content)                          
+    response['Cache-Control'] ='no-cache, no-store'                             
+    return response
+
+def load_hot_users(request): 
+    """
+    Load some hot users 
+    """
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
+    #FIXME: add hotness to users 
+    users = Users.objects.all()
+    html = '<ol id="hot_users" class="list-unstyled">'
+    for user in users:
+        html += """
+                  <li>
+                      <img width="23" height="23" src="/static/media/images/icons/User.png" />
+                      <a href="#">%s</a>
+                  </li>""" % (user.username)
+    html += "</ol>"
+    response = HttpResponse(html, content_type="text/html")
+    response['Content-Length'] = len(response.content)                          
+    response['Cache-Control'] ='no-cache, no-store'                             
+    return response
+
 def load_categories_from_lib(request):
-    content = {
-        'category': {
-            '唐诗': {
-                'description': '全唐诗海量诗库'
-            },
-            '宋词': {
-                'description': '宋词海量诗库'
-            },
-            '元曲': {
-                'description': '元曲海量诗库'
-            },
-            '成语': {
-                'description': '成语故事'
-            },
-            '菜谱': {
-                'description': '美味菜谱'
-            }
-        },
-    }
+    """
+    Load in categories
+    """
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
+    fang = '房产'
+    wen = '文学'
+    sheng = '生活'
+    qi = '其它'
+
+    content = collections.OrderedDict([
+        (fang, []),
+        (wen, []),
+        (sheng, []),
+        (qi, [])
+    ])
+    categories = Category.objects.all()
+    for category in categories:
+        if category.parent:
+            if category.parent.name == fang:
+                content[fang].append(category)
+            elif category.parent.name == wen:
+                content[wen].append(category)
+            elif category.parent.name == sheng:
+                content[sheng].append(category)
+            else:
+                content[qi].append(category)
+        else:
+            content[qi].append(category)
 
     html = """
             <script>
@@ -467,63 +599,146 @@ def load_categories_from_lib(request):
                 });
             </script>
     """
-    html += "<table class='table'>"
-    index = 0
-    for category, category_obj in content['category'].iteritems():
-        # 4 categories per row
-        _, remainder = divmod(index, 4)
-        if remainder == 0:
-            # start a new row
-            html += """
-                <tr>
-                    <td>
-                      <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类">
-                      
-                      <div class="caption">
-                         <h3>%(category)s</h3>
-                         <p class="small text-info">%(description)s</p>
-                      </div>
-                    </td>
-            """ % {
-            'category': category,
-            'description': category_obj['description']
-            }
-        elif remainder == 3:
-            # ends a row
-            html += """
-                    <td>
-                      <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类">
-                      
-                      <div class="caption">
-                         <h3>%(category)s</h3>
-                         <p class="small text-info">%(description)s</p>
-                      </div>
-                    </td>
-                </tr>
-            """ % {
-            'category': category,
-            'description': category_obj['description']
-            }
-        else:
-            # in the same row
-            html += """
-                    <td>
-                      <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类">
-                      
-                      <div class="caption">
-                         <h3>%(category)s</h3>
-                         <p class="small text-info">%(description)s</p>
-                      </div>
-                    </td>
-            """ % {
-            'category': category,
-            'description': category_obj['description']
-            }
-        index += 1
+    for category, category_objs in content.iteritems():
+        index = 0
+        html += "<h2 class='bg-primary'>%s</h2>" % category
+        html += "<table class='table'>"
+        for obj in category_objs:
+            # 4 categories per row
+            _, remainder = divmod(index, 4)
+            if remainder == 0:
+                # start a new row
+                html += """
+                    <tr>
+                        <td width="25%%">
+                          <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类" />
+                          
+                          <div class="caption">
+                             <span>%(sample)s</span>
+                          </div>
+                        </td>
+                """ % {
+                'category': obj.name,
+                'sample': load_sample_articles_from_lib(obj.name)
+                }
+            elif remainder == 3:
+                # ends a row
+                html += """
+                        <td width="25%%">
+                          <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类" />
+                          
+                          <div class="caption">
+                             <span>%(sample)s</span>
+                          </div>
+                        </td>
+                    </tr>
+                """ % {
+                'category': obj.name,
+                'sample': load_sample_articles_from_lib(obj.name)
+                }
+            else:
+                # in the same row
+                html += """
+                        <td width="25%%">
+                          <img id="%(category)s" class="img-circle cate-icon" width="75" height="75" src="/static/media/images/icons/%(category)s.png" alt="文库种类" />
+                          
+                          <div class="caption">
+                             <span>%(sample)s</span>
+                          </div>
+                        </td>
+                """ % {
+                'category': obj.name,
+                'sample': load_sample_articles_from_lib(obj.name)
+                }
+            index += 1
 
-    html += "</table>"
+        # padding the empty spots
+        if index == 1:
+            for i in range(3):
+                html += """
+                    <td width="25%%"></td>
+                """
+            html += "</tr>"
+        elif index == 2:
+            for i in range(2):
+                html += """
+                    <td width="25%%"></td>
+                """
+            html += "</tr>"
+        elif index == 3:
+            html += """
+               <td width="25%%"></td>
+             </tr>
+            """
+        html += "</table>"
+
     html += "<a href='#' class='pull-right'>更多类别...</a>"
     response = HttpResponse(html, content_type="text/html")
     response['Content-Length'] = len(response.content)                          
     response['Cache-Control'] ='no-cache, no-store'                             
-    return response    
+    return response
+
+def lib_ad_placement_preview_refresh(request, template_id, logo_filename):
+    """
+    Insert logo to template chosen
+    """
+    html = ""
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        if int(template_id) == 1:
+            # head
+            html += '<img src="/static/uploads/%s/%s" %s %s/>' % (
+                        request.user.username, 
+                        logo_filename,
+                        _center_logo(),
+                        _get_logo_size()
+                    )
+            html += """
+                <h4 id="article_title" class="text-center">%s</h4>
+                <div id="article_body" class="container">%s</div>
+            """ % (body['article_title'], body['article_body'])
+        elif int(template_id) == 2:
+            # bottm 
+            html += """
+                <h4 id="article_title" class="text-center">%s</h4>
+                <div id="article_body" class="container">%s</div>
+            """ % (body['article_title'], body['article_body'])
+            html += '<img src="/static/uploads/%s/%s" %s %s/>' % (
+                        request.user.username, 
+                        logo_filename,
+                        _center_logo(),
+                        _get_logo_size()
+                    )
+        elif int(template_id) == 3:
+            # wrap text around image
+            html = """
+              <img src="/static/uploads/%s/%s" %s class="pull-left gap-right"/>
+              <h4 id="article_title" class="text-center">%s</h4>
+              <div id="article_body" class="container">%s</div>
+            """ % (
+                request.user.username, 
+                logo_filename,
+                _get_logo_size(),
+                body['article_title'],
+                body['article_body']
+            )
+        elif int(template_id) == 4:
+            # wrap text around image
+            html = """
+              <img src="/static/uploads/%s/%s" %s class="pull-right gap-right"/>
+              <h4 id="article_title" class="text-center">%s</h4>
+              <div id="article_body" class="container">%s</div>
+            """ % (
+                request.user.username, 
+                logo_filename,
+                _get_logo_size(),
+                body['article_title'],
+                body['article_body']
+            )
+
+    response = HttpResponse(html, content_type="text/html")
+    response['Content-Length'] = len(response.content)                          
+    response['Cache-Control'] ='no-cache, no-store'                             
+    return response
+
+

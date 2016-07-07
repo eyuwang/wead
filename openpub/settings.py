@@ -149,7 +149,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = '/static/uploads/internal/'
+### FIXEME: enable this for content builder
+#MEDIA_ROOT = '/static/uploads/internal/'
 
 # Put media static files in global static dirs 
 STATICFILES_DIRS = [

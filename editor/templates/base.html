@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">                 
                                                                                     
   <head>                                                                            
-    <title>OpenPub System Welcomes You</title>  
+    <title>欢迎来到cwgate!</title>  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">          
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,20 +12,81 @@
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css" type="text/css" />
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
 
     <!--<link rel="icon" type="image/png" href="/static/media/images/favicon.png" /> --><!-- FIXME: favicon needed -->
     <link rel="stylesheet" href="/static/media/css/main.css" type="text/css" />
     <!-- Custom styles for this template -->
     <link href="http://getbootstrap.com/examples/theme/theme.css" rel="stylesheet" type="text/css">
-                                                                                    
-    <!--
-    <script type="text/javascript" src="/static/media/"></script>
-    -->
-                                                                                    
     {% block head_extra %}{% endblock %}
+
+    <style>
+        html, body {
+          height: 100%;
+        }
+
+        #wrap {
+          min-height: 100%;
+        }
+
+        #main {
+          overflow:auto;
+          padding-bottom:150px; /* this needs to be bigger than footer height*/
+        }
+
+        .footer {
+          position: relative;
+          margin-top: -140px; /* negative value of footer height */
+          height: 140px;
+          clear:both;
+          padding-top:20px;
+          background: #3c3c3c none repeat scroll 0 0;
+        } 
+
+        a:hover, a:focus {
+            color: #fff;
+            background-color: #3c3c3c;
+            text-decoration: none;
+
+        }
+        a {
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+            color: #9d9d9d;
+            text-decoration: none;
+        }
+    </style>
   </head>                                                                           
   <body role="document">
+    <div id="wrap">
+      <div id="main" class="container clear-top">
+        <div class="container theme-showcase" role="main">
+          <!-- Main jumbotron for a primary marketing message or call to action -->
+            {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Fixed footer -->
+    <footer class="footer">
+        <table class="center">
+            <tr>
+                <td><a href="#about">关于我们</a></td>
+                <td><a href="#about">网站简介</a></td>
+                <td><a href="#about">业务联系</a></td>
+            </tr>
+            <tr>
+                <td><a href="#about">合作推广</a></td>
+                <td><a href="#about">其他</a></td>
+                <td><a href="#about">其他</a></td>
+            </tr>
+            <tr>
+                <td><a href="#about">其他</a></td>
+                <td><a href="#about">其他</a></td>
+                <td><a href="#about">其他</a></td>
+            </tr>
+        </table>
+    </footer>
+
     <!-- Fixed navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -36,32 +97,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">OpenPub</a>
+          <a class="no-class" href="{% url 'editor_index' %}"><img class="navar-brand" width="115" height="61" src="/static/media/images/icons/cwgate-logo1.png" alt="cwgate.com"></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{% url 'editor_index' %}">首页</a></li>
-            <li><a href={% url 'add_writer_article' %}>添加文章</a></li>
-            <li><a href={% url 'show_writer_articles_list' %}>我的文章</a></li>
-            <li><a href={% url 'registration_register' %}>注册账号</a></li>
-
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">我的账号<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href={% url 'show_account' %}>查看</a></li>
-                <li><a href="#">修改</a></li>
-                <li><a href={% url 'upload_file' %}>上传</a></li>
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">登录信息</li>
-                {% if logged_in == 1 %}
-                <li><a href={% url 'auth_logout' %}>退出</a></li> 
-                {% else %}
-                <li><a href={% url 'auth_login' %}>登录</a></li>
-                {% endif %}
-              </ul>
-            </li>
-            <li><a href="#about">关于我们</a></li>
+            <li><a href="{% url 'show_member_benefits' %}">会员</a></li>
+            <li><a href={% url 'add_writer_article' %}>写手</a></li>
+            <li><a href={% url 'show_subscriber_benefits' %}>订阅</a></li>
           </ul>
+
           {% if logged_in == 1 %}
           <span class='text-success pull-right'>Welcome, {{ user.first_name|title }}</span>
           {% endif %}
@@ -69,15 +113,5 @@
       </div>
     </nav>
 
-    <div class="container theme-showcase" role="main">
-      <!-- Main jumbotron for a primary marketing message or call to action -->
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <div class="jumbotron">
-        {% block content %}{% endblock %}
-      </div>
-    </div>
   </body>
 </html>

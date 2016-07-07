@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block head_extra %}
+    <script type="text/javascript">
+        $(document).ready(function(){ 
+           // load some hot articles
+           $.ajax({                                                     
+                url: '/external/articles/load/hot/',
+                beforeSend: function(xhr, request) {
+                    $('#hot_articles').replaceWith('<ol id="hot_articles">Loading...</ol>');
+                },
+                success: function(xdata, status, response){
+                    $('#hot_articles').replaceWith(xdata);
+                },
+                complete: function(response) {                           
+                }
+            });
+
+           // load some hot users 
+           $.ajax({                                                     
+                url: '/users/load/hot/',
+                beforeSend: function(xhr, request) {
+                    $('#hot_users').replaceWith('<ol id="hot_users">Loading...</ol>');
+                },
+                success: function(xdata, status, response){
+                    $('#hot_users').replaceWith(xdata);
+                },
+                complete: function(response) {                           
+                }
+            });
+
+           // load in the categories
+           $.ajax({                                                     
+                url: '/external/categories/load/',
+                beforeSend: function(xhr, request) {
+                    $('#categories').replaceWith('<span id="categories">Loading...</span>');
+                },
+                success: function(xdata, status, response){
+                    $('#categories').replaceWith('<span id="categories" class="center">' + xdata + '</span>');
+                },
+                complete: function(response) {                           
+                }
+            });
+
+        });
+    </script>
+
+
+{% endblock %}
+
+{% block content %}
+
+    <!-- Carousel
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide" style="background-color: #333" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="0"></li>
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        <div class="item active">
+          <img class="first-slide" src="/static/media/images/carousel/stanford.png" alt="First slide">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>通向移动商业广告之门</h1>
+              <p><a class="btn btn-lg btn-primary" href="#" role="button">投放广告</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img class="second-slide" src="/static/media/images/carousel/summer_palace.png" alt="Second slide">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>优雅 直观 流畅</h1>
+              <p>联系客户的最佳平台</p>
+              <p><a class="btn btn-lg btn-primary" href="#" role="button">订阅服务</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img class="third-slide" src="/static/media/images/carousel/test.jpg" alt="Third slide">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>优雅 直观 流畅</h1>
+              <p>联系客户的最佳平台</p>
+              <p><a class="btn btn-lg btn-primary" href="#" role="button">订阅服务</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div><!-- /.carousel -->
+
+    <br/>
+    <br/>
+
+     <div class="jumbotron">
+          <div class="row">
+            <div class="col-sm-8">
+                <span id="categories">category selection</span>
+            </div>
+
+            <!-- sidebar -->
+            <div class="col-sm-3 col-sm-offset-1">
+              <div class="sidebar-module sidebar-module-inset">
+                <h4>热门文章</h4>
+                <ol id="hot_articles" class="list-unstyled">
+                </ol>
+              </div>
+
+              <div class="sidebar-module">
+                <h4>热门客户</h4>
+                <ol id="hot_users" class="list-unstyled">
+                </ol>
+              </div>
+
+            </div><!-- /sidebar -->
+          </div><!-- /.row -->
+     </div><!-- /.jumbotron-->
+
+{% endblock %}

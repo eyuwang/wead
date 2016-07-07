@@ -28,3 +28,14 @@ span.test {
     width: 0;
     background-color: #0099ff;
 }
+
+.wrap_text_main {
+    width: 350px;
+    margin: 5px;
+}
+
+.wrap_text_main .wrap_text_screenshot {
+    float: right;
+    border: 1px solid #c0c0c0;
+    padding: 5px;
+}

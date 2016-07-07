@@ -37,7 +37,7 @@ class UsersModelAuth(models.Model):
     """
     email = models.EmailField(db_index=True, null=False)
     username = models.CharField(max_length=128, null=True)
-    user_type = models.CharField(max_length=128, null=True)
+    user_type = models.CharField(max_length=128, null=False)
     date_of_birth = models.DateField(null=True)
     date_joined = models.DateTimeField(auto_now_add=True, null=True)
     is_active = models.BooleanField(default=False)
@@ -46,7 +46,7 @@ class UsersModelAuth(models.Model):
     objects = UsersManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'date_of_birth']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'user_type', 'date_of_birth']
 
     def __unicode__(self):
         return self.user
@@ -89,7 +89,7 @@ class Users(AbstractBaseUser):
     """
     email = models.EmailField(unique=True, db_index=True, null=False)
     username = models.CharField(max_length=128, null=True)
-    user_type = models.CharField(max_length=128, null=True)
+    user_type = models.CharField(max_length=128, null=False)
     first_name = models.CharField(max_length=128, null=True)
     last_name = models.CharField(max_length=128, null=True)
     date_of_birth = models.DateField(null=True)
