@@ -38,7 +38,6 @@ def editor1(request):
 
 
 @render_to('editor.html')                                                
-@login_required
 def editor(request):
     writer_articles_list = Articles.objects.all()
     paginator = Paginator(writer_articles_list, 25)
@@ -110,19 +109,16 @@ def editor(request):
     }
 
 @render_to('show_subscriber_benefits.html')                                                
-@login_required
 def show_subscriber_benefits(request):
     return {
     }
 
 @render_to('show_member_benefits.html')                                                
-@login_required
 def show_member_benefits(request):
     return {
     }
 
 @render_to('show_writer_articles.html')                                                
-@login_required
 def show_writer_articles_list(request):
     writer_articles_list = Articles.objects.all()
     paginator = Paginator(writer_articles_list, 25)
@@ -146,7 +142,6 @@ def show_writer_articles_list(request):
     }
 
 @render_to('editor.html')                                                
-@login_required
 def edit_writer_article(request, article_id):
     try:
         writer_article = Articles.objects.get(id=article_id)
@@ -162,7 +157,6 @@ def edit_writer_article(request, article_id):
     }
 
 @render_to('editor.html')                                                
-@login_required
 def add_writer_article(request):
     form = ArticleForm()
     return {
@@ -171,7 +165,6 @@ def add_writer_article(request):
     }
 
 @render_to('show_writer_article.html')                                                
-@login_required
 def show_writer_article(request, article_id):
     try:
         writer_article = Articles.objects.get(id=article_id)
@@ -223,7 +216,6 @@ def show_account(request):
         'has_uploads': len(files_uploaded)
     }
 
-@login_required
 @render_to('show_source.html')                                                
 def dispatch_ad_source(request):
     return {
@@ -250,7 +242,6 @@ def upload_file(request):
         'user': request.user.username
     }
 
-@login_required
 @render_to('ad_preview.html')                                                
 def ad_placement_preview(request, article_id):
     if request.method == 'POST':
@@ -367,12 +358,10 @@ def like_article(request, article_id):
     writer_article.save()
     return HttpResponse(writer_article.num_like, content_type="text/plain")
 
-@login_required
 @render_to('pick_from_lib.html')            
 def pick_articles_from_lib(request):
     return {}
 
-@login_required
 @render_to('lib_ad_preview.html')                                                
 def lib_ad_placement_preview(request, article_id):
     article = Article.objects.get(id=article_id)
