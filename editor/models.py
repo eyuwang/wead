@@ -165,6 +165,17 @@ class UploadFile(models.Model):
     user = models.CharField(max_length=128, null=True)
     file_uploaded = models.FileField(upload_to=update_filename)
 
+class ArticleEdited(models.Model):
+    """
+    Edited Article model
+    """
+    content = models.TextField(null=True)
+    num_like = models.IntegerField(null=True, default=0)
+    num_read = models.IntegerField(null=True, default=0)
+    num_frwd = models.IntegerField(null=True, default=0)
+    num_para = models.IntegerField(null=True, default=0)
+
+
 ## Library articles
 #class Category(models.Model):
 #    name = models.CharField(max_length=30)

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block head_extra %}
+    <script type="text/javascript">
+    </script>
+{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron">
+    {{ edited_article|linebreaks }}
+</div>
+
+<span class="glyphicon glyphicon-book" aria-hidden="true"></span> &nbsp;{{ article_read }} &nbsp; &nbsp;
+<a id="like_it" href='#' class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></a> &nbsp;<span id="num_like">{{ article_like }}</span>
+{% endblock %}

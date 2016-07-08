@@ -7,9 +7,10 @@ from os import walk
 from utils.shortcuts import render_to
 from utils.JSONResponse import JsonResponse
 from .forms import ArticleForm, UploadFileForm
-from .models import Articles, Users
+from .models import Articles, Users, ArticleEdited
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import redirect
 from django.shortcuts import render_to_response
@@ -379,6 +380,7 @@ def pick_articles_from_lib(request):
     return {}
 
 @render_to('lib_ad_preview.html')
+@login_required
 def lib_ad_placement_preview(request, article_id):
     article = Article.objects.get(id=article_id)
     files_uploaded = []
@@ -773,3 +775,26 @@ def handler404(request):
                    context_instance=RequestContext(request))
     response.status_code = 404
     return response
+
+
+@render_to('publish_article.html')
+def show_published_article(request, article_id):
+    try:
+        article = ArticleEdited.objects.get(id=article_id)
+
+        return {
+            'edited_article': mark_safe(article.content),
+            'article_read': article.num_read,
+            'article_like': article.num_like,
+        }
+    except ArticleEdited.DoesNotExist:
+        return redirect('not_found', permanent=True)
+
+def publish_edited_article(request):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        article = ArticleEdited(content=body['html'])
+        article.save()
+
+        url = reverse('show_published_article', args=[article.id])
+        return HttpResponse(url, content_type="text/plain")

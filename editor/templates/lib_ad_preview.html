@@ -33,7 +33,7 @@
 
             // Update current rendering upon template and log change
             // This is updating template event
-            var template_selected = 0;
+            var template_selected = 1;
             var logo_selected = 0;
             $("input:radio[name=logo_form]:checked").each(function() {
                 logo_selected = $(this).val();
@@ -45,6 +45,7 @@
                 var article_title = $("#article_title").html()
                 var article_body = $("#article_body").html()
                 var backgroud_decorated = $("#article_decorated")[0].style.backgroundColor;
+
                 $.ajax({
                     url: '/source/lib/preview/refresh/' + template_selected + '/' + logo_selected +'/',
                     method: "POST",
@@ -75,8 +76,6 @@
 
             // Update current rendering upon template and log change
             // This is updating logo event
-            var template_selected = 0;
-            var logo_selected = 0;
             $("input:radio[name=template_form]:checked").each(function() {
                 template_selected = $(this).val();
             });
@@ -87,6 +86,7 @@
                 var article_title = $("#article_title").html()
                 var article_body = $("#article_body").html()
                 var backgroud_decorated = $("#article_decorated")[0].style.backgroundColor;
+
                 $.ajax({
                     url: '/source/lib/preview/refresh/' + template_selected + '/' + logo_selected +'/',
                     method: "POST",
@@ -129,12 +129,16 @@
                 $('#yulan_content')[0].style.backgroundColor = background_decorated;
                 $('#yulan_body')[0].style.backgroundColor = body_background_decorated;
 
-                /*
+            });
+
+            // Save the page
+            $("#she_ding3").click(function() {
+                var content = $('#yulan_body');
                 $.ajax({
-                    url: '/source/lib/preview/refresh/' + template_selected + '/' + logo_selected +'/',
+                    url: '/articles/publish/',
                     method: "POST",
                     dataType: "json",
-                    data: JSON.stringify({'article_title': article_title, 'article_body': article_body}),
+                    data: JSON.stringify({'html': content.html()}),
                     processData: false,
                     contentType: "application/json; charset=UTF-8",
                     beforeSend: function(xhr, request) {
@@ -143,21 +147,9 @@
                     success: function(xdata, status, response){
                     },
                     complete: function(response) {
-                        $('#article_decorated').replaceWith(
-                            '<div class="container" id="article_decorated">' +
-                            response.responseText +
-                            '</div>'
-                        );
+                        window.location.replace(response.responseText);
                     }
                 });
-*/
-            });
-
-            // Save the page
-            $("#she_ding3").click(function() {
-                var content = $('#yulan_body');
-                console.log(content.html());
-                $('#yulan_content').replaceWith(content.html());
             });
 
         });
