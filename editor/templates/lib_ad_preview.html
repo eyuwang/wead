@@ -30,11 +30,27 @@
                 $('body')[0].style.backgroundColor = $('input[name="color_radio"]:checked', '#color_radio_form').val();
             });
 
-
-            // Update current rendering upon template and log change
+            // Update current rendering up on template and log change
             // This is updating template event
             var template_selected = 1;
             var logo_selected = 0;
+
+            // Initialize logo_selected to first image available
+            $("input:radio[name=logo_form]:first").each(function() {
+                var $elem = $(this);
+                $elem.attr('checked', 'checked');
+
+                logo_selected = $(this).val();
+            });
+
+            // Initialize template_selected to first template available
+            //$("input:radio[name=template_form]:first").each(function() {
+            //    var $elem = $(this);
+            //    $elem.attr('checked', 'checked');
+            //
+            //    logo_selected = $(this).val();
+            //});
+
             $("input:radio[name=logo_form]:checked").each(function() {
                 logo_selected = $(this).val();
             });
@@ -134,11 +150,12 @@
             // Save the page
             $("#she_ding3").click(function() {
                 var content = $('#yulan_body');
+                var article_title = $("#article_title").html()
                 $.ajax({
                     url: '/articles/publish/',
                     method: "POST",
                     dataType: "json",
-                    data: JSON.stringify({'html': content.html()}),
+                    data: JSON.stringify({'html': content.html(), 'article_title': article_title}),
                     processData: false,
                     contentType: "application/json; charset=UTF-8",
                     beforeSend: function(xhr, request) {
@@ -323,7 +340,6 @@
                 </div>
               </div>
 
-
               <div class="modal fade" id="modal4" role="dialog">
                 <div class="modal-dialog modal-lg">
                   <!-- Modal content-->
@@ -343,7 +359,6 @@
                   </div>
                 </div>
               </div>
-
 
     <div class="container">
         <button id="yu_lan" type="button" data-toggle="modal" data-target="#modal4" class="btn btn-success">编辑的差不多了，看看效果</button>

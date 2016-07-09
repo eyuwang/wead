@@ -42,7 +42,7 @@ def test(request):
 
 
 @render_to('home.html')
-def editor1(request):
+def home(request):
     return {
     }
 
@@ -275,7 +275,7 @@ def ad_placement_preview(request, article_id):
                             content_builder += '%s %s' % ('<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                     request.user.username,
                                                     logo_filename,
-                                                    center_logo(),
+                                                    _center_logo(),
                                                     _get_logo_size()
                                                  ),
                                                  para)
@@ -284,7 +284,7 @@ def ad_placement_preview(request, article_id):
                             content_builder += '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                 request.user.username,
                                                 logo_filename,
-                                                center_logo(),
+                                                _center_logo(),
                                                 _get_logo_size()
                                             )
                         ad_placement_processed.append(logo)
@@ -295,7 +295,7 @@ def ad_placement_preview(request, article_id):
                                             '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                 request.user.username,
                                                 logo_filename,
-                                                center_logo(),
+                                                _center_logo(),
                                                 _get_logo_size()
                                             ))
                             para_processed = True
@@ -303,7 +303,7 @@ def ad_placement_preview(request, article_id):
                             content_builder += '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                             request.user.username,
                                             logo_filename,
-                                            center_logo(),
+                                            _center_logo(),
                                             _get_logo_size()
                                         )
                         ad_placement_processed.append(logo)
@@ -323,7 +323,7 @@ def ad_placement_preview(request, article_id):
                                                 '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                     request.user.username,
                                                     logo_filename,
-                                                    center_logo(),
+                                                    _center_logo(),
                                                     _get_logo_size()
                                                 ))
                                 para_processed = True
@@ -331,7 +331,7 @@ def ad_placement_preview(request, article_id):
                                 content_builder += '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                                     request.user.username,
                                                     logo_filename,
-                                                    center_logo(),
+                                                    _center_logo(),
                                                     _get_logo_size()
                                                 )
                             ad_placement_processed.append(logo)
@@ -347,7 +347,7 @@ def ad_placement_preview(request, article_id):
                         content_builder += '<img src="/static/uploads/%s/%s" %s %s/>' % (
                                             request.user.username,
                                             logo_filename,
-                                            center_logo(),
+                                            _center_logo(),
                                             _get_logo_size()
                                          )
                 if not para_processed:
@@ -786,6 +786,7 @@ def show_published_article(request, article_id):
             'edited_article': mark_safe(article.content),
             'article_read': article.num_read,
             'article_like': article.num_like,
+            'title': article.title
         }
     except ArticleEdited.DoesNotExist:
         return redirect('not_found', permanent=True)
@@ -794,6 +795,7 @@ def publish_edited_article(request):
     if request.method == 'POST':
         body = json.loads(request.body)
         article = ArticleEdited(content=body['html'])
+        article.title = body['article_title']
         article.save()
 
         url = reverse('show_published_article', args=[article.id])

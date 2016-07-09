@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
 {% block head_extra %}
     <script type="text/javascript">
+            $('#like_it').click(function(){
+               var article_id = $('#article_id').val()
+               $.ajax({
+                    url: '/editor/articles/' + article_id + '/like/',
+                    beforeSend: function(xhr, request) {
+                    },
+                    success: function(xdata, status, response){
+                        $('#num_like').replaceWith('<span id="num_like">'
+                                                     + xdata
+                                                     + '</span>');
+                    },
+                    complete: function(response) {
+                    }
+                });
+            });
     </script>
 {% endblock %}
 

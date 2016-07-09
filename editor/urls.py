@@ -3,8 +3,8 @@ from django.conf.urls import url
 from editor import views
 
 urlpatterns = [
-    #url(r'^$', views.editor, name='editor_index'),
-    url(r'^$', views.editor1, name='editor_index'),
+    url(r'^$', views.home, name='home'),
+    url(r'^editor/$', views.editor, name='editor_index'),
     url(r'^test/$', views.test, name='test'),
     url(r'^articles/$', views.show_writer_articles_list, name='show_writer_articles_list'),
     url(r'^articles/(?P<article_id>\d+)/$', views.show_writer_article, name='show_writer_article'),
