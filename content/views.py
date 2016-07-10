@@ -38,12 +38,12 @@ def addarticle(request):
             category = form.cleaned_data['category']
             author = form.cleaned_data['author']
             title = form.cleaned_data['title']
-            body = form.cleaned_data['body']
+            content = form.cleaned_data['content']
             article = Article.objects.get_or_create(
                 category = Category.objects.get(id=category),
 	        author = author,
 	        title = title,
-	        body = body
+	        content = content 
 	    )
             return redirect('/internal/content/article/list/')
         else:
@@ -67,10 +67,10 @@ def editarticle(request, aid):
         if form.is_valid():
             author = form.cleaned_data['author']
             title = form.cleaned_data['title']
-            body = form.cleaned_data['body']
+            content = form.cleaned_data['content']
             article.author = author
             article.title = title
-            article.body = body
+            article.content = content
             article.save()
             return redirect('/internal/content/article/list/')
         else:
@@ -105,11 +105,11 @@ def addarticles(request):
         form = ArticlesForm(request.POST)
         if form.is_valid():
             category = form.cleaned_data['category']
-            body = form.cleaned_data['body']
+            content = form.cleaned_data['content']
 
             category = Category.objects.get(id=category)
 
-            save_content(category, body)
+            save_content(category, content)
             
             return redirect('/internal/content/article/list/')
         else:
@@ -145,17 +145,17 @@ def save_chunk(category, chunk, hasNoAuthor):
                 category = category,
                 author = author,
                 title = title,
-                body = poem
+                content = poem
             )
         return 0
     return -1
 
-def save_content(category, body):
+def save_content(category, content):
     # 100, 200, 300 - format: title, author, content
     # articles are separated by blank lines
     # 500 - number, title, content
 
-    lines = body.splitlines()
+    lines = content.splitlines()
 
     chunk=[]
     lnum = 0

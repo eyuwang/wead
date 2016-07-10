@@ -8,7 +8,7 @@ from registration.signals import user_registered
 # Create your models here.
 
 class UsersManager(BaseUserManager):
-    def create_user(self, email, date_of_birth, password=None):
+    def create_user(self, email, date_of_birth, password=None, *args, **kwargs):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -21,13 +21,17 @@ class UsersManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, date_of_birth, password):
+    def create_superuser(self, username, first_name, last_name, email, date_of_birth, password, *args, **kwargs):
         user = self.create_user(
+            username = username,
             email = email,
             password = password,
             date_of_birth = date_of_birth,
+
         )
+
         user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -42,6 +46,7 @@ class UsersModelAuth(models.Model):
     date_joined = models.DateTimeField(auto_now_add=True, null=True)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     objects = UsersManager()
 
@@ -97,6 +102,7 @@ class Users(AbstractBaseUser):
     # By default, user is active as soon as he reigsters
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     objects = UsersManager()
 
