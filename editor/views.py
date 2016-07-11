@@ -167,6 +167,7 @@ def edit_writer_article(request, article_id):
     }
 
 @render_to('editor.html')
+@login_required
 def add_writer_article(request):
     form = ArticleForm()
     return {
@@ -175,6 +176,7 @@ def add_writer_article(request):
     }
 
 @render_to('show_writer_article.html')
+@login_required
 def show_writer_article(request, article_id):
     try:
         writer_article = Articles.objects.get(id=article_id)
@@ -208,8 +210,8 @@ def show_writer_article(request, article_id):
             'logged_in': _logged_in(request)
         }
 
-@login_required
 @render_to('show_user.html')
+@login_required
 def show_account(request):
     try:
         user = Users.objects.get(username=request.user.username)

@@ -113,6 +113,7 @@
     {% endif %}
 
     {% if article_exists == 1 %}
+    <div class="jumbotron">
         <div id="article_content" class="container">
             <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#myModal">投放广告</button>
             <a href={% url 'edit_writer_article' article_id %} class="btn btn-sm btn-success pull-right">修改文章</a>
@@ -166,9 +167,8 @@
                   </div>
                 </div>
               </div>
-
         </div>
-
+    </div>
     {% endif %}
     <hr>
 
