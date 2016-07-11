@@ -176,11 +176,13 @@ class ArticleEdited(models.Model):
     Edited Article model
     """
     title = models.TextField(null=True)
+    author = models.TextField(null=True)
     content = models.TextField(null=True)
     num_like = models.IntegerField(null=True, default=0)
     num_read = models.IntegerField(null=True, default=0)
     num_frwd = models.IntegerField(null=True, default=0)
     num_para = models.IntegerField(null=True, default=0)
+    is_lib_article = models.IntegerField(null=True, default=0)
 
 
 ## Library articles

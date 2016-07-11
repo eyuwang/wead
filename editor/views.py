@@ -776,7 +776,6 @@ def handler404(request):
     response.status_code = 404
     return response
 
-
 @render_to('publish_article.html')
 def show_published_article(request, article_id):
     try:
@@ -786,7 +785,8 @@ def show_published_article(request, article_id):
             'edited_article': mark_safe(article.content),
             'article_read': article.num_read,
             'article_like': article.num_like,
-            'title': article.title
+            'title': article.title,
+            'is_lib_article': article.is_lib_article
         }
     except ArticleEdited.DoesNotExist:
         return redirect('not_found', permanent=True)
@@ -796,6 +796,7 @@ def publish_edited_article(request):
         body = json.loads(request.body)
         article = ArticleEdited(content=body['html'])
         article.title = body['article_title']
+        article.is_lib_article = int(body['is_lib_article'])
         article.save()
 
         url = reverse('show_published_article', args=[article.id])

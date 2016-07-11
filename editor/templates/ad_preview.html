@@ -2,6 +2,25 @@
 <link rel="stylesheet" href="/static/bootstrap-colorpicker/css/bootstrap-colorpicker.css" type="text/css" />
 
 <script>
+
+ $(document).ready(function(){
+
+           function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            var csrftoken = getCookie('csrftoken');
+
     $('#cp4').colorpicker().on('changeColor', function(e) {
         $('body')[0].style.backgroundColor = e.color.toHex();
     });
@@ -9,6 +28,45 @@
     $('#color_radio_form input').on('change', function() {
         $('body')[0].style.backgroundColor = $('input[name="color_radio"]:checked', '#color_radio_form').val(); 
     });
+
+
+            $("#yu_lan").click(function() {
+                var background_decorated = $("#article_decorated")[0].style.backgroundColor;
+                var body_background_decorated = $('body')[0].style.backgroundColor;
+                var article_decorated = $("#article_decorated").html()
+                $('#yulan_content').replaceWith(
+                       '<div id="yulan_content" style="' + $("#article_decorated")[0].style +'">' +
+                        article_decorated +
+                        '</div>'
+                );
+                $('#yulan_content')[0].style.backgroundColor = background_decorated;
+                $('#yulan_body')[0].style.backgroundColor = body_background_decorated;
+
+            });
+
+            // Save the page
+            $("#she_ding3").click(function() {
+                var content = $('#yulan_body');
+                var article_title = $("#article_title").html()
+                $.ajax({
+                    url: '/articles/publish/',
+                    method: "POST",
+                    dataType: "json",
+                    data: JSON.stringify({'html': content.html(), 'article_title': article_title, 'is_lib_article': 0}),
+                    processData: false,
+                    contentType: "application/json; charset=UTF-8",
+                    beforeSend: function(xhr, request) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    },
+                    success: function(xdata, status, response){
+                    },
+                    complete: function(response) {
+                        window.location.replace(response.responseText);
+                    }
+                });
+            });
+    });
+
 </script>
 
 <div class="container">
@@ -66,14 +124,42 @@
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                      <button id="yu_lan" type="button" class="btn btn-success" data-dismiss="modal">设定</button>
+                      <button id="she_ding2" type="button" class="btn btn-success" data-dismiss="modal">设定</button>
                     </div>
                   </div>
                 </div>
               </div>
 
-    <h4 class="text-center">{{ article_title|safe }}</h4>
+
+              <div class="modal fade" id="modal4" role="dialog">
+                <div class="modal-dialog modal-lg">
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div id="yulan_body" class="modal-body" style="background-color:#abf2c9;">
+                        <div>
+                            <div class="jumbotron" style="border:3px solid #87babc;">
+                                <!-- article original content -->
+                                <div id="yulan_content"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">再调整一下</button>
+                      <button id="she_ding3" type="button" class="btn btn-success" data-dismiss="modal">可以了</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
     <div class="container">
-        {{ article_logo_placed }}
+        <button id="yu_lan" type="button" data-toggle="modal" data-target="#modal4" class="btn btn-success">编辑的差不多了，看看效果</button>
     </div>
+
+    <div id="article_decorated">
+        <h4 id="article_title" class="text-center">{{ article.title|safe }}</h4>
+        <div id="article_body" class="container">
+            {{ article_logo_placed }}
+        </div>
+    </div>
+
 </div>

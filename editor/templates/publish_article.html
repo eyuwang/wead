@@ -22,7 +22,11 @@
 {% block content %}
 
 <div class="jumbotron">
-    {{ edited_article|linebreaks }}
+    {% if is_lib_article == 1 %} 
+        {{ edited_article|linebreaks }}
+    {% else %}
+        {{ edited_article }}
+    {% endif %}
 </div>
 
 <span class="glyphicon glyphicon-book" aria-hidden="true"></span> &nbsp;{{ article_read }} &nbsp; &nbsp;
