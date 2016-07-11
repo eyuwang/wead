@@ -116,9 +116,8 @@
         <div id="article_content" class="container">
             <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#myModal">投放广告</button>
             <a href={% url 'edit_writer_article' article_id %} class="btn btn-sm btn-success pull-right">修改文章</a>
-            <h4 class="text-center">{{ article_title|safe }}</h4>
+            <h4 id="article_title" class="text-center">{{ article_title|safe }}</h4>
             {{ article_content|safe }}
-
 
             <input type="hidden" id="num_para" value="{{ article_para }}" />
               <!-- Modal -->

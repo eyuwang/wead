@@ -48,6 +48,7 @@
             $("#she_ding3").click(function() {
                 var content = $('#yulan_body');
                 var article_title = $("#article_title").html()
+                console.log(article_title);
                 $.ajax({
                     url: '/articles/publish/',
                     method: "POST",
@@ -156,7 +157,7 @@
     </div>
 
     <div id="article_decorated">
-        <h4 id="article_title" class="text-center">{{ article.title|safe }}</h4>
+        <h2 id="article_title" class="text-center">{{ article_title|safe }}</h2>
         <div id="article_body" class="container">
             {{ article_logo_placed }}
         </div>

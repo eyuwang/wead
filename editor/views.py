@@ -258,7 +258,7 @@ def ad_placement_preview(request, article_id):
         article = Articles.objects.get(id=article_id)
         content = article.content
         num_para = article.num_para
-        content_builder = ''
+        content_builder = ""
         ad_placement_positions = json.loads(request.body)
         ad_placement_processed = []
         para_index = 0 # begining of article

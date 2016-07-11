@@ -20,15 +20,13 @@
 {% endblock %}
 
 {% block content %}
-
 <img src="/static/media/images/icons/cwgate_ad_logo.png" class="img-responsive" alt="CWGATE.com"> 
-<div class="jumbotron">
-    {% if is_lib_article == 1 %} 
-        {{ edited_article|linebreaks }}
-    {% else %}
-        {{ edited_article }}
-    {% endif %}
-</div>
+
+{% if is_lib_article == 1 %} 
+    {{ edited_article|linebreaks }}
+{% else %}
+    {{ edited_article }}
+{% endif %}
 
 <span class="glyphicon glyphicon-book" aria-hidden="true"></span> &nbsp;{{ article_read }} &nbsp; &nbsp;
 <a id="like_it" href='#' class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></a> &nbsp;<span id="num_like">{{ article_like }}</span>
