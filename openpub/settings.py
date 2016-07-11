@@ -24,6 +24,7 @@ SECRET_KEY = '*@cl#zjg7f3d!-=0*y@h46mr5t%x_5y^0kgx$gw=j4i8$!slci'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+PRODUCTION = True
 
 ALLOWED_HOSTS = []
 
@@ -54,7 +55,7 @@ AUTH_USER_MODEL = 'editor.Users'
 #DJANGO_WYSIWYG_FLAVOR = "tinymce_advanced"
 #DJANGO_WYSIWYG_MEDIA_URL = '/Library/Python/2.7/site-packages/tinymce/media/tiny_mce'
 DJANGO_WYSIWYG_FLAVOR = "ckeditor"
-DJANGO_WYSIWYG_MEDIA_URL = '/Library/Python/2.7/site-packages/ckeditor/static/ckeditor'
+DJANGO_WYSIWYG_MEDIA_URL = '/usr/local/lib/python2.7/dist-packages/ckeditor'
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -152,7 +153,12 @@ STATIC_URL = '/static/'
 ### FIXEME: enable this for content builder
 #MEDIA_ROOT = '/static/uploads/internal/'
 
-# Put media static files in global static dirs 
+# Put media static files in global static dirs
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+try:
+    from settings_local import *
+except ImportError:
+    pass

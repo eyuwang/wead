@@ -70,16 +70,14 @@ class ArticleForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={
                 'id': 'text_editor_pane',
-                'placeholder': '加点内容吧....',
-                'rows': 100
+                'rows': 500
             }
         ),
-        initial='加点内容吧....',
         required = True
     )
 
     class Meta:
-        model = Articles 
+        model = Articles
         #fields = ['author', 'title', 'content']
         fields = ['title', 'content']
 
@@ -88,5 +86,5 @@ class UploadFileForm(forms.ModelForm):
     user = forms.CharField()
 
     class Meta:
-        model = UploadFile 
+        model = UploadFile
         fields = ['file_uploaded', 'user']

@@ -44,6 +44,7 @@ def test(request):
 @render_to('home.html')
 def home(request):
     return {
+        'logged_in': _logged_in(request)
     }
 
 
@@ -121,11 +122,13 @@ def editor(request):
 @render_to('show_subscriber_benefits.html')
 def show_subscriber_benefits(request):
     return {
+        'logged_in': _logged_in(request)
     }
 
 @render_to('show_member_benefits.html')
 def show_member_benefits(request):
     return {
+        'logged_in': _logged_in(request)
     }
 
 @render_to('show_writer_articles.html')
@@ -152,6 +155,7 @@ def show_writer_articles_list(request):
     }
 
 @render_to('editor.html')
+@login_required
 def edit_writer_article(request, article_id):
     try:
         writer_article = Articles.objects.get(id=article_id)
@@ -234,8 +238,8 @@ def dispatch_ad_source(request):
     }
 
 
-@login_required
 @render_to('file_upload.html')
+@login_required
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
