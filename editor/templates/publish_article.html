@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% block head_extra %}
     <script type="text/javascript">
+        $(document).ready(function(){
             $('#like_it').click(function(){
                var article_id = $('#article_id').val()
                $.ajax({
-                    url: '/editor/articles/' + article_id + '/like/',
+                    url: '/editor/articles/publish/' + article_id + '/like/',
                     beforeSend: function(xhr, request) {
                     },
                     success: function(xdata, status, response){
@@ -16,6 +17,7 @@
                     }
                 });
             });
+        });
     </script>
 {% endblock %}
 
@@ -28,6 +30,7 @@
     {{ edited_article }}
 {% endif %}
 
+<input id="article_id" type="hidden" value={{ article_id }}></input>
 <span class="glyphicon glyphicon-book" aria-hidden="true"></span> &nbsp;{{ article_read }} &nbsp; &nbsp;
 <a id="like_it" href='#' class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></a> &nbsp;<span id="num_like">{{ article_like }}</span>
 {% endblock %}

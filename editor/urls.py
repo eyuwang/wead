@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^articles/add/$', views.add_writer_article, name='add_writer_article'),
     url(r'^articles/ad/preview/(?P<article_id>\d+)/$', views.ad_placement_preview, name='ad_preview'),
     url(r'^articles/publish/$', views.publish_edited_article, name='publish_edited_article'),
+    url(r'^articles/publish/(?P<article_id>\d+)/like/$', views.like_edited_article, name='like_edited_article'),
     url(r'^articles/publish/show/(?P<article_id>\d+)/$', views.show_published_article, name='show_published_article'),
     url(r'^account/member/$', views.show_member_benefits, name='show_member_benefits'),
     url(r'^account/subscribe/$', views.show_subscriber_benefits, name='show_subscriber_benefits'),

@@ -374,6 +374,11 @@ def like_lib_article(request, article_id):
     lib_article.save()
     return HttpResponse(lib_article.num_like, content_type="text/plain")
 
+def like_edited_article(request, article_id):
+    edited_article = ArticleEdited.objects.get(id=article_id)
+    edited_article.num_like += 1
+    edited_article.save()
+    return HttpResponse(edited_article.num_like, content_type="text/plain")
 
 @render_to('pick_from_lib.html')
 def pick_articles_from_lib(request):
@@ -780,11 +785,14 @@ def handler404(request):
 def show_published_article(request, article_id):
     try:
         article = ArticleEdited.objects.get(id=article_id)
+        article.num_read += 1
+        article.save()
 
         return {
             'edited_article': mark_safe(article.content),
             'article_read': article.num_read,
             'article_like': article.num_like,
+            'article_id': article_id,
             'title': article.title,
             'is_lib_article': article.is_lib_article
         }
