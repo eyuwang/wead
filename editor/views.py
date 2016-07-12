@@ -29,6 +29,16 @@ def _logged_in(request):
         return 1
     return 0
 
+def _truncate_words(text, num_words):
+    text_truncated = ""
+    for idx, word in enumerate(text):
+        if idx <= num_words:
+            text_truncated += word
+        else:
+            text_truncated += '...'
+            break
+    return text_truncated
+
 def _get_logo_size():
     return 'style="width:280px;height:176px;"'
 
@@ -505,7 +515,7 @@ def load_sample_articles_from_lib(category_name):
             html += """
                       <li>
                           <a href="/source/lib/articles/show/%s/">%s</a>
-                      </li>""" % (article.id, article.title)
+                      </li>""" % (article.id, _truncate_words(article.title, 6))
         html += """   <li class="pull-left"> &gt;&gt;
                           <a href="/source/lib/preview/2/">进入频道</a>
                       </li>
@@ -521,18 +531,50 @@ def load_hot_articles_from_lib(request):
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
-    #FIXME: add hotness to article
-    articles = Article.objects.all()
+    top_n = []
+    top_n_lib = []
+    top_n_writer = []
+
+    index = 0
+    lib_articles = Article.objects.order_by('-num_read')[:13]
+    for lib_article in lib_articles:
+        # URI, title, num_read
+        top_n_lib.append(['/source/lib/articles/show/%s/' % lib_article.id,
+                            _truncate_words(lib_article.title, 10), lib_article.num_read])
+        index += 1
+
+    index = 0
+    writer_articles = Articles.objects.order_by('-num_read')[:13]
+    for writer_article in writer_articles:
+        # URI, title, num_read
+        top_n_writer.append(['/editor/articles/%s/' % writer_article.id,
+                            _truncate_words(writer_article.title, 10), writer_article.num_read])
+        index += 1
+
     index = 1
-    html = '<ol id="hot_articles" class="list-unstyled">'
-    for article in articles[:13]:
+    html = '<ol id="hot_articles" class="list-unstyled"><h6 class="bg-primary">文库文章</h6>'
+    for article in top_n_lib:
         html += """
                   <li>
                       <span>%s. <span>
-                      <a href="/source/lib/articles/show/%s/">%s</a>
-                  </li>""" % (index, article.id, article.title)
+                      <a href="%s">%s</a>
+                      <span class="badge">%s</span>
+                  </li>""" % (index, article[0], article[1], article[2])
         index += 1
     html += "</ol>"
+
+    index = 1
+    html += '<ol id="hot_articles" class="list-unstyled"><h6 class="bg-primary">写手文章</h6>'
+    for article in top_n_writer:
+        html += """
+                  <li>
+                      <span>%s. <span>
+                      <a href="%s">%s</a>
+                      <span class="badge">%s</span>
+                  </li>""" % (index, article[0], article[1], article[2])
+        index += 1
+    html += "</ol>"
+
     response = HttpResponse(html, content_type="text/html")
     response['Content-Length'] = len(response.content)
     response['Cache-Control'] ='no-cache, no-store'
