@@ -569,9 +569,9 @@ def load_categories_from_lib(request):
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
-    fang = '房产'
-    wen = '文学'
-    sheng = '生活'
+    fang = '生活面面观'
+    wen = '一览众山小'
+    sheng = '世界掌中看'
     qi = '其它'
 
     content = collections.OrderedDict([
