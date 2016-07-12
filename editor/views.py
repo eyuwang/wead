@@ -525,7 +525,7 @@ def load_sample_articles_from_lib(category_name):
 
 def load_hot_articles_from_lib(request):
     """
-    Load some hot artiles
+    Load hot articles
     """
     import sys
     reload(sys)
@@ -554,24 +554,43 @@ def load_hot_articles_from_lib(request):
     index = 1
     html = '<ol id="hot_articles" class="list-unstyled"><h6 class="bg-primary">文库文章</h6>'
     for article in top_n_lib:
+        if index <= 3:
+            num_class = 'number_circle_%s' % index
+        else:
+            num_class = 'number_circle_regular'
+        if index < 10:
+            idx = '0%s' % index
+        else:
+            idx = index
+
         html += """
                   <li>
-                      <span>%s. <span>
+                      <span class="%s">%s</span>
                       <a href="%s">%s</a>
                       <span class="badge">%s</span>
-                  </li>""" % (index, article[0], article[1], article[2])
+                  </li>""" % (num_class, idx, article[0], article[1], article[2])
         index += 1
     html += "</ol>"
 
     index = 1
     html += '<ol id="hot_articles" class="list-unstyled"><h6 class="bg-primary">写手文章</h6>'
     for article in top_n_writer:
+        if index <= 3:
+            num_class = 'number_circle_%s' % index
+        else:
+            num_class = 'number_circle_regular'
+        if index < 10:
+            idx = '0%s' % index
+        else:
+            idx = index
+
+
         html += """
                   <li>
-                      <span>%s. <span>
+                      <span class="%s">%s</span>
                       <a href="%s">%s</a>
                       <span class="badge">%s</span>
-                  </li>""" % (index, article[0], article[1], article[2])
+                  </li>""" % (num_class, idx, article[0], article[1], article[2])
         index += 1
     html += "</ol>"
 
@@ -842,6 +861,7 @@ def show_published_article(request, article_id):
             'article_like': article.num_like,
             'article_id': article_id,
             'title': article.title,
+            'ad_logo_num': random.choice(range(2)),
             'is_lib_article': article.is_lib_article
         }
     except ArticleEdited.DoesNotExist:

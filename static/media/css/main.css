@@ -39,3 +39,52 @@ span.test {
     border: 1px solid #c0c0c0;
     padding: 5px;
 }
+
+.number_circle_regular, .number_circle_1, .number_circle_2, .number_circle_3 {
+    border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+
+    width: 5px;
+    height: 5px;
+    padding: 4px;
+    
+    background: #fff;
+    border: 1px solid #666;
+    color: #666;
+    text-align: center;
+    
+    font: 10px Arial, sans-serif;
+}
+
+.number_circle_1 {
+    color: #c70039;
+}
+
+.number_circle_2 {
+    color: #ff5733;
+}
+
+.number_circle_3 {
+    color: #ffc300;
+}
+
+.about_us {
+    background-color: #3498db;
+}
+
+.about_cwgate {
+    background-color: #16a085;
+}
+
+.about_advertiser {
+    background-color: #27ae60;
+}
+
+.center_text {
+    text-align: center;
+}
+
+span.white_text {
+    color: #fff;
+    font-size: 35px;
+}
