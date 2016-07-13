@@ -3,6 +3,7 @@
 {% endblock %}
 
 {% block content %}
+<div class="jumbotron">
     {% include 'show_writer_article_snippet.html' %}
 
     {% load wysiwyg %}
@@ -10,29 +11,30 @@
     <form action={% url 'editor_index' %} method="post">
         {% csrf_token %}
 
-<div class="container">
-  {% if form.title.value != None %}
-    <h2>修改文章</h2>
-  {% else %}
-    <h2>添加新文章</h2>
-  {% endif %}
-  <form class="form-horizontal" role="form">
-    <div class="form-group">
-      <label class="col-sm-2 control-label">标题</label>
-      <div class="col-sm-10">
-        <input class="form-control" id="{{ form.title.id }}" name="{{ form.title.name }}" type="text" {% if form.title.value != None %} value="{{ form.title.value }}" {% endif %} placeholder="给个标题吧...">
-      </div>
-      <br/>
-      <br/>
-      <br/>
-      <label class="col-sm-2 control-label">内容</label>
-      <div class="col-sm-10">
-        {{ form.content }}<br/>
-        <input type="submit"  class="btn btn-sm btn-success pull-right" value="提交" />
-      </div>
+    <div class="container">
+      {% if form.title.value != None %}
+        <h2>修改文章</h2>
+      {% else %}
+        <h2>添加文章</h2>
+      {% endif %}
+      <form class="form-horizontal" role="form">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">标题</label>
+          <div class="col-sm-10">
+            <input class="form-control" id="{{ form.title.id }}" name="{{ form.title.name }}" type="text" {% if form.title.value != None %} value="{{ form.title.value }}" {% endif %} placeholder="给个标题吧...">
+          </div>
+          <br/>
+          <br/>
+          <br/>
+          <label class="col-sm-2 control-label">内容</label>
+          <div class="col-sm-10">
+            {{ form.content }}<br/>
+            <input type="submit"  class="btn btn-sm btn-success pull-right" value="提交" />
+          </div>
+        </div>
+       </form>
     </div>
-   </form>
-</div>
 
     {% wysiwyg_editor "text_editor_pane" %}
+</div>
 {% endblock %}

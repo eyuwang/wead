@@ -17,7 +17,7 @@ class Article(models.Model):
     title = models.CharField(max_length=120)
     author = models.CharField(max_length=30)
     content = models.TextField('Content')
-    added = models.DateTimeField('date added',null=True,auto_now_add=True)
+    date = models.DateTimeField('date added',null=True,auto_now_add=True)
     num_like = models.IntegerField(null=True, default=0)
     num_read = models.IntegerField(null=True, default=0)
     num_frwd = models.IntegerField(null=True, default=0)

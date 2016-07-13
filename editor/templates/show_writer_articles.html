@@ -2,5 +2,8 @@
 {% block head_extra %}{% endblock %}
 
 {% block content %}
-    {% include 'show_writer_article_snippet.html' %}
+    <div class="jumbotron">
+        {% include 'show_writer_article_snippet.html' %}
+    </div>
+    <a href='{% url "add_writer_article" %}'><button type="button" class="btn btn-warning btn-sm pull-right">添加文章</button></a>
 {% endblock %}

@@ -155,6 +155,7 @@ class Articles(models.Model):
     """
     author = models.ForeignKey(Users, related_name='Users', null=True)
     title = models.TextField(null=True)
+    date = models.DateTimeField(auto_now_add=True)
     content = models.TextField(null=True)
     num_like = models.IntegerField(null=True, default=0)
     num_read = models.IntegerField(null=True, default=0)
@@ -178,6 +179,7 @@ class ArticleEdited(models.Model):
     title = models.TextField(null=True)
     author = models.TextField(null=True)
     content = models.TextField(null=True)
+    date = models.DateTimeField(auto_now_add=True)
     num_like = models.IntegerField(null=True, default=0)
     num_read = models.IntegerField(null=True, default=0)
     num_frwd = models.IntegerField(null=True, default=0)

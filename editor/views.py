@@ -142,7 +142,71 @@ def show_member_benefits(request):
     }
 
 @render_to('show_writer_articles.html')
-def show_writer_articles_list(request):
+@login_required
+def show_writer_articles(request):
+    writer_articles_list = Articles.objects.all()
+    paginator = Paginator(writer_articles_list, 25)
+
+    page = request.GET.get('page')
+    try:
+        articles = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        articles = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        articles = paginator.page(paginator.num_pages)
+
+    try:
+        user = Users.objects.get(username=request.user.username)
+    except:
+        return redirect('/accounts/login', permanent=True)
+
+    return {
+        'articles_list': articles,
+        'logged_in': _logged_in(request),
+        'user': user
+    }
+
+@render_to('editor.html')
+@login_required
+def edit_writer_article(request, article_id):
+    writer_articles_list = Articles.objects.all()
+    paginator = Paginator(writer_articles_list, 25)
+
+    page = request.GET.get('page')
+    try:
+        articles = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        articles = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        articles = paginator.page(paginator.num_pages)
+
+    try:
+        user = Users.objects.get(username=request.user.username)
+    except:
+        return redirect('registration_register', permanent=True)
+
+    try:
+        writer_article = Articles.objects.get(id=article_id)
+        form = ArticleForm(
+            instance = writer_article
+        )
+    except Articles.DoesNotExist:
+        form = ArticleForm()
+
+    return {
+        'form': form,
+        'articles_list': articles,
+        'logged_in': _logged_in(request),
+        'user': user
+    }
+
+@render_to('editor.html')
+@login_required
+def add_writer_article(request):
     writer_articles_list = Articles.objects.all()
     paginator = Paginator(writer_articles_list, 25)
 
@@ -158,35 +222,12 @@ def show_writer_articles_list(request):
 
     user = Users.objects.get(username=request.user.username)
 
-    return {
-        'articles_list': articles,
-        'logged_in': _logged_in(request),
-        'user': user
-    }
-
-@render_to('editor.html')
-@login_required
-def edit_writer_article(request, article_id):
-    try:
-        writer_article = Articles.objects.get(id=article_id)
-        form = ArticleForm(
-            instance = writer_article
-        )
-    except Articles.DoesNotExist:
-        form = ArticleForm()
-
-    return {
-        'form': form,
-        'logged_in': _logged_in(request)
-    }
-
-@render_to('editor.html')
-@login_required
-def add_writer_article(request):
     form = ArticleForm()
     return {
+        'articles_list': articles,
         'form': form,
-        'logged_in': _logged_in(request)
+        'logged_in': _logged_in(request),
+        'user': user
     }
 
 @render_to('show_writer_article.html')
@@ -197,7 +238,11 @@ def show_writer_article(request, article_id):
         writer_article.num_read += 1
         writer_article.save()
 
-        user = Users.objects.get(username=request.user.username)
+        try:
+            user = Users.objects.get(username=request.user.username)
+        except:
+            return redirect('registration_register', permanent=True)
+
         files_uploaded = []
         for (_, _, filenames) in walk('static/uploads/%s' % user.username):
             files_uploaded.extend(filenames)
@@ -205,8 +250,10 @@ def show_writer_article(request, article_id):
 
         return {
             'article_exists': 1,
+            'article_author': writer_article.author,
             'article_content': writer_article.content,
             'article_title': writer_article.title,
+            'article_date': writer_article.date,
             'article_id': article_id,
             'article_like': writer_article.num_like,
             'article_read': writer_article.num_read,
@@ -234,7 +281,7 @@ def show_account(request):
             files_uploaded.extend(filenames)
             break
     except:
-        print 'no user yet!'
+        return redirect('registration_register', permanent=True)
 
     return {
         'user': user,
@@ -375,7 +422,9 @@ def ad_placement_preview(request, article_id):
 
     return {
         'article_logo_placed': mark_safe(content_builder),
-        'article_title': article.title
+        'article_title': article.title,
+        'article_date': article.date,
+        'article_author': article.author,
     }
 
 def like_article(request, article_id):
@@ -511,19 +560,21 @@ def load_sample_articles_from_lib(category_name):
             suggested = articles
 
         html += """<ul class="list-unstyled">"""
+        index = 1
         for article in suggested:
             html += """
                       <li>
+                          <span class="number_circle_regular">0%s</span>
                           <a href="/source/lib/articles/show/%s/">%s</a>
-                      </li>""" % (article.id, _truncate_words(article.title, 6))
+                      </li>""" % (index, article.id, _truncate_words(article.title, 6))
+            index += 1
         html += """   <li class="pull-left"> &gt;&gt;
-                          <a href="/source/lib/preview/2/">进入频道</a>
+                          <a href="#">进入频道</a>
                       </li>
                    </ul>"""
-
     return html
 
-def load_hot_articles_from_lib(request):
+def load_hot_articles(request):
     """
     Load hot articles
     """

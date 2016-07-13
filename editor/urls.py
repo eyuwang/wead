@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^editor/$', views.editor, name='editor_index'),
     url(r'^test/$', views.test, name='test'),
-    url(r'^articles/$', views.show_writer_articles_list, name='show_writer_articles_list'),
+    url(r'^articles/$', views.show_writer_articles, name='show_writer_articles'),
     url(r'^articles/(?P<article_id>\d+)/$', views.show_writer_article, name='show_writer_article'),
     url(r'^articles/(?P<article_id>\d+)/edit/$', views.edit_writer_article, name='edit_writer_article'),
     url(r'^articles/(?P<article_id>\d+)/like/$', views.like_article, name='like_article'),
@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^source/lib/preview/refresh/(?P<template_id>\d+)/(?P<logo_filename>.*)/$', views.lib_ad_placement_preview_refresh, name='lib_ad_preview_refresh'),
     url(r'^external/categories/load/$', views.load_categories_from_lib, name='load_categories_from_lib'),
     url(r'^external/category/suggest/$', views.load_articles_from_category, name='load_articles_from_category'),
-    url(r'^external/articles/load/hot/$', views.load_hot_articles_from_lib, name='load_hot_articles_from_lib'),
+    url(r'^external/articles/load/hot/$', views.load_hot_articles, name='load_hot_articles'),
     url(r'^users/load/hot/$', views.load_hot_users, name='load_hot_users'),
 
     url(r'^404/$', views.handler404, name='not_found'),
