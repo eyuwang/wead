@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block head_extra %}
+    <style type="text/css">
+        .under {
+            position:relative;
+            left:0px;
+            top:0px;
+            z-index:1;
+        }
+        .over {
+            position:absolute;
+            left:{{ xpos }}px;
+            top:{{ ypos }}px;
+            z-index:1;
+        }
+        h3 {
+            position: absolute;
+            left: {{ xpos_c }}px;
+            top: {{ ypos_c }}px;
+            margin: -10px;
+            z-index:2;
+        }
+        h3 span {
+            color: red;
+            font: bold {{ tsize }}px/{{ tbsize }}px Geneva, Sans-serif;
+            letter-spacing: -1px;
+            padding: 0px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <div style="position: relative;">
+            <img src="/{{ image_base }}/{{ img1 }}" width="{{ img1xsize }}" height="{{ img1ysize }}" class="under" />
+            <img src="/{{ image_base }}/{{ img2 }}" width="{{ img2xsize }}" height="{{ img2ysize }}" class="over" />
+            <h3><span>{{ name }}<br />{{ phone }}<br />{{ email }}</span></h3>
+        </div>
+   </div>
+
+{% endblock %}

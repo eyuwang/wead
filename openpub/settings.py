@@ -152,6 +152,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 ### FIXEME: enable this for content builder
 #MEDIA_ROOT = '/static/uploads/internal/'
+USER_LOGO_TEMPLATES_DIR = 'static/media/images/logos'
 
 # Put media static files in global static dirs
 STATICFILES_DIRS = [

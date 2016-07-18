@@ -5,6 +5,7 @@ from editor import views
 urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^editor/$', views.editor, name='editor_index'),
+    url(r'^editor/users/logo_gen/$', views.gen_logo, name='generate_user_log'),
     url(r'^test/$', views.test, name='test'),
     url(r'^articles/$', views.show_writer_articles, name='show_writer_articles'),
     url(r'^articles/(?P<article_id>\d+)/$', views.show_writer_article, name='show_writer_article'),

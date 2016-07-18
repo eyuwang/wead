@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*
+import os
 import json
 import collections
 import random
@@ -9,6 +10,7 @@ from utils.JSONResponse import JsonResponse
 from .forms import ArticleForm, UploadFileForm
 from .models import Articles, Users, ArticleEdited
 from django.http import HttpResponse
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -244,7 +246,13 @@ def show_writer_article(request, article_id):
             return redirect('registration_register', permanent=True)
 
         files_uploaded = []
-        for (_, _, filenames) in walk('static/uploads/%s' % user.username):
+        files_uploaded_path = os.path.abspath(
+                                os.path.join(
+                                    settings.BASE_DIR,
+                                    'static/uploads/%s' % user.username
+                                ))
+
+        for (_, _, filenames) in walk(files_uploaded_path):
             files_uploaded.extend(filenames)
             break
 
@@ -277,7 +285,12 @@ def show_account(request):
     try:
         user = Users.objects.get(username=request.user.username)
         files_uploaded = []
-        for (_, _, filenames) in walk('static/uploads/%s' % user.username):
+        files_uploaded_path = os.path.abspath(
+                                os.path.join(
+                                    settings.BASE_DIR,
+                                    'static/uploads/%s' % request.user.username
+                                ))
+        for (_, _, filenames) in walk(files_uploaded_path):
             files_uploaded.extend(filenames)
             break
     except:
@@ -454,7 +467,13 @@ def pick_articles_from_lib(request):
 def lib_ad_placement_preview(request, article_id):
     article = Article.objects.get(id=article_id)
     files_uploaded = []
-    for (_, _, filenames) in walk('static/uploads/%s' % request.user.username):
+    files_uploaded_path = os.path.abspath(
+                            os.path.join(
+                                settings.BASE_DIR,
+                                'static/uploads/%s' % reqeust.user.username
+                            ))
+
+    for (_, _, filenames) in walk(files_uploaded_path):
         files_uploaded.extend(filenames)
         break
 
@@ -928,3 +947,93 @@ def publish_edited_article(request):
 
         url = reverse('show_published_article', args=[article.id])
         return HttpResponse(url, content_type="text/plain")
+
+def save_resized(imgfile, img, sffx, enh=0):
+    fname, ftype = os.path.splitext(imgfile)
+    outfname = fname + sffx + ftype
+
+    img.save(outfname, img.format)
+    return outfname
+
+def get_textsize(imgsize):
+    if imgsize >= 100 and imgsize < 200:
+        textsize = (12, 20)
+    elif imgsize >= 200 and imgsize < 300:
+        textsize = (12, 20)
+    elif imgsize >= 300 and imgsize < 400:
+        textsize = (16, 28)
+    elif imgsize >= 400 and imgsize < 500:
+        textsize = (20, 30)
+    elif imgsize >= 500 and imgsize < 600:
+        textsize = (24, 36)
+    else:
+        textsize = (28, 40)
+
+    return textsize
+
+@render_to('logogen.html')
+def gen_logo(request):
+    '''
+    TESTDATA should come from user profile
+    Biggest issue: resulting files from different users may overwrite each other's
+    '''
+    import sys
+    from PIL import Image, ImageFilter
+
+    logo_size = (400, 250)
+
+    TESTDATA = {
+        'bgrd_file': os.path.abspath(os.path.join(settings.BASE_DIR, settings.USER_LOGO_TEMPLATES_DIR, 'lake.png')),
+        'fgrd_file': os.path.abspath(os.path.join(settings.BASE_DIR, settings.USER_LOGO_TEMPLATES_DIR, 'head.png')),
+        'name': 'Your name',
+        'email': 'your@email.com',
+        'phone': '(123) 456-7890',
+        'wechat': 'mywechat',
+    }
+
+    bgrd_file = TESTDATA['bgrd_file']
+    fgrd_file = TESTDATA['fgrd_file']
+
+    try:
+        bgrd_img = Image.open(bgrd_file)
+        fgrd_img = Image.open(fgrd_file)
+    except:
+        print('Cannot load the image')
+        return {}
+
+    new_bgrd_file = bgrd_file
+    new_fgrd_file = fgrd_file
+
+    if bgrd_img.size[0] > logo_size[0]:
+        bgrd_img.thumbnail(logo_size, Image.ANTIALIAS)
+
+    if fgrd_img.size[0] > 0.6*logo_size[0] or fgrd_img.size[1] > 0.6*bgrd_img.size[1]:
+        fgrd_img.thumbnail((logo_size[0]*0.6, logo_size[1]*0.6), Image.ANTIALIAS)
+
+    if bgrd_img.size[0] < 2.0 * fgrd_img.size[0]:
+        fgrd_img.thumbnail((0.6 * bgrd_img.size[0], 0.6 * bgrd_img.size[1]), Image.ANTIALIAS)
+
+    new_bgrd_file = save_resized(bgrd_file, bgrd_img, '1', 0)
+    new_fgrd_file = save_resized(fgrd_file, fgrd_img, '1', 0)
+
+    textsize = get_textsize(logo_size[0])
+    context = {
+        'img1': os.path.basename(new_bgrd_file),
+        'img2': os.path.basename(new_fgrd_file),
+        'image_base': settings.USER_LOGO_TEMPLATES_DIR,
+        'img1xsize': logo_size[0],
+        'img1ysize': logo_size[1],
+        'img2xsize': fgrd_img.size[0],
+        'img2ysize': fgrd_img.size[1],
+        'xpos': 0.02 * logo_size[0],
+        'ypos': logo_size[1] - fgrd_img.size[1],
+        'xpos_c': 0.6 * logo_size[0],
+        'ypos_c': 0.5 * logo_size[1],
+        'tsize': textsize[0],
+        'tbsize': textsize[1],
+        'name': TESTDATA['name'],
+        'phone': TESTDATA['phone'],
+        'email': TESTDATA['email'],
+    }
+
+    return context
